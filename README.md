@@ -1,5 +1,6 @@
 # mobile_computing
 Progetto per il corso di Mobile Computing - anno accademico 2021/2022
+
 _attenzione! i comandi sotto riportati sono per Windows_
 
 per poter utilizzare il codice bisogna avere expo installato sul proprio pc e creare un nuovo progetto con il comando _expo i nome_app_
