@@ -1,11 +1,11 @@
 # mobile_computing
-Progetto per il corso di Mobile Computing - anno accademico 2021/2022
-
+**Progetto per il corso di Mobile Computing - anno accademico 2021/2022**
 _attenzione! i comandi sotto riportati sono per Windows_
 
-per poter utilizzare il codice bisogna avere expo installato sul proprio pc e creare un nuovo progetto con il comando _expo i nome_app_
+Per poter utilizzare il codice bisogna avere expo installato sul proprio pc e creare un nuovo progetto con il comando _expo i nome_app_
 Quando il pacchetto è stato creato bisogna importare i file presenti in questa repository e installare i comandi sotto risportati:
 _attenzione, assicurarsi di aver aperto il terminare nella cartella del progetto
+
 _
 -------- COMANDI PER IL PROFILO------------
 npm install react-native-paper
