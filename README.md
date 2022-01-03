@@ -1,4 +1,4 @@
-# mobile_computing
+# mobile_computing - REACT 
 **Progetto per il corso di Mobile Computing - anno accademico 2021/2022**
 
 _attenzione! i comandi sotto riportati sono per Windows_
