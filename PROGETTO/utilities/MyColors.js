@@ -2,7 +2,10 @@ export const COLORS = {
   white: "#fff",
   black: "#000",
   grey: "#999999",
-  lightGreen: "#E1FEDB",
+  lightColor: "#B8DBDE",
+  darkColor: "#244447",
   lightGrey: "#D7DBD9",
-  primaryColor: "#3CA832",
+  primaryColor: "#378A91",
+  secondaryColor: "#4BBAC4",
+  darkGrey: "#4F565C",
 };

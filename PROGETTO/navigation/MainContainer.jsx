@@ -10,11 +10,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 //import screens
 import Bacheca from "./screens/Bacheca/Bacheca";
 import Tratte from "./screens/Tratta/Tratte";
-import Profilo from "../navigation/screens/Profilo";
+import Profilo from "./screens/Profilo/Profilo";
 
 //import other page
 import CommunicationController from "../utilities/CommunicationController";
 import Storage from "../utilities/Storage";
+import Model from "../utilities/Model";
 
 //import color
 import { COLORS } from "../utilities/MyColors";
@@ -68,12 +69,15 @@ class MainContainer extends Component {
   }
 
   renderNavigator(primaPagina) {
+    console.log("in renderNavigation");
+
     return (
       <NavigationContainer>
         <Tab.Navigator
           initialRouteName={primaPagina} //radice da dove parte la navigationbar
           screenOptions={({ route }) => ({
             //route = location dove siamo ora
+
             tabBarIcon: ({ focused, color, size }) => {
               //specifichiamo colore, size etc. dell'icona
               let iconName;
@@ -92,7 +96,16 @@ class MainContainer extends Component {
             tabBarInactiveTintColor: COLORS.grey,
             tabBarActiveTintColor: COLORS.primaryColor,
             labelStyle: { paddingBottom: 10, fontSize: 10 },
-            style: { padding: 10, height: 70 },
+            style: {
+              position: "absolute",
+              bottom: 25,
+              left: 20,
+              right: 20,
+              elevation: 0,
+              backgroundColor: COLORS.white,
+              borderRadius: 15,
+              height: 90,
+            },
           })}
         >
           <Tab.Screen
@@ -102,13 +115,16 @@ class MainContainer extends Component {
               sid: this.state.sid,
               did: this.state.did,
               lines: this.state.lines,
-              posts: this.state.posts,
             }}
           />
           <Tab.Screen
             name={tratte}
             component={Tratte}
-            initialParams={{ sid: this.state.sid, lines: this.state.lines }}
+            initialParams={{
+              sid: this.state.sid,
+              lines: this.state.lines,
+              onSelect: this.changePage,
+            }}
           />
           <Tab.Screen name={profilo} component={Profilo} />
         </Tab.Navigator>
@@ -123,6 +139,7 @@ class MainContainer extends Component {
         this.state.sid = result.sid;
         this.setState(this.state);
         Storage.saveSid(result.sid);
+        Model.Sid = result.sid;
         this.downloadLinee(this.state.sid);
       })
       .catch((error) => {
@@ -135,6 +152,7 @@ class MainContainer extends Component {
       .then((result) => {
         this.state.sid = result;
         this.setState(this.state);
+        Model.Sid = result;
       })
       .catch((e) => {
         console.error("Error in getSid: " + e);
@@ -146,11 +164,10 @@ class MainContainer extends Component {
           console.log("secondo avvio con did");
           this.state.did = result;
           this.setState(this.state);
-          this.downloadPosts(this.state.sid, this.state.did);
-          //TODO dowload dei post
+          Model.Did = result;
           //[ ] solo quando recupera il did bisogna sbloccare il pulsantino per poter andare sulla bacheca
         }
-        this.downloadLinee(this.state.sid);
+        this.downloadLinee(this.state.sid); //faccio sempre il download delle linee
       })
       .catch((e) => {
         console.error("Error in getDid: " + e);
@@ -171,6 +188,7 @@ class MainContainer extends Component {
           this.setState({ tratteScreen: true });
         } else if (this.state.did != "") {
           //SECONDO AVVIO, SI DID -> andiamo su bacheca
+          // this.downloadPosts(this.state.sid, this.state.did);
           this.setState({ tratteScreen: false });
         }
       })
@@ -179,18 +197,12 @@ class MainContainer extends Component {
       });
   }
 
-  downloadPosts(sid, did) {
-    console.log("dowload posts");
-    CommunicationController.getPosts(sid, did)
-      .then((result) => {
-        this.state.posts = result.posts;
-        this.setState(this.state);
-        console.log(this.state.posts);
-      })
-      .catch((e) => {
-        console.error("Error " + e);
-      });
-  }
+  /** ALTRE FUNZIONI */
+
+  changePage = (did) => {
+    this.setState({ tratteScreen: false });
+    this.setState({ did: did });
+  };
 }
 
 const styles = StyleSheet.create({

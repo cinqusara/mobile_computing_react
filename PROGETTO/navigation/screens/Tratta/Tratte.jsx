@@ -1,15 +1,25 @@
 //import elementi
 import React from "react";
 import { Component } from "react";
-import { FlatList, StyleSheet, Text, View, StatusBar } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  StatusBar,
+  Button,
+} from "react-native";
 import { COLORS } from "../../../utilities/MyColors";
 
 //import pages
-import CommunicationController from "../../../utilities/CommunicationController";
 import Storage from "../../../utilities/Storage";
 
 //import Component
 import Line from "./Line";
+import Model from "../../../utilities/Model";
+
+//const for screen
+const bacheca = "Bacheca";
 
 class Tratte extends Component {
   state = {
@@ -18,13 +28,8 @@ class Tratte extends Component {
     lines: this.props.route.params.lines,
     didArrivalStation: "",
     arrivalStation: "",
-    goBackToBacheca: this.props.navigation.goBack, //valore già presente nel navigation
+    onSelect: this.props.route.params.onSelect,
   };
-
-  // componentDidMount() {
-  //   //console.log(this.props);
-  //   this.getLines(this.state.sid);
-  // }
 
   render() {
     if (this.state.lines != null) {
@@ -33,6 +38,7 @@ class Tratte extends Component {
           <StatusBar backgroundColor={COLORS.primaryColor} />
           <FlatList
             data={this.state.lines}
+            extraData={this.state}
             renderItem={this.renderLine}
             keyExtractor={(data) => data.terminus1.did}
           ></FlatList>
@@ -52,13 +58,11 @@ class Tratte extends Component {
   handleSelect = (didArrivalStation, arrivalStation) => {
     console.log("Select " + didArrivalStation + " -> " + arrivalStation);
     this.setState({ didArrivalStation: didArrivalStation });
-    this.setState({ arrivalStation: arrivalStation });
-    //[x] andare sulla pagina bacheca
-    //[ ] fare in modo che quando si torna indietro venga fatta una chiamata per recuperare i post
-    //    [x] possiamo salvare il did in maniera persistente
-    //    [ ] possiamo salvare il did nello stato del Main Container tramite la funzione set params del navigator
-    this.state.goBackToBacheca();
     Storage.saveDid(didArrivalStation);
+    Model.Did = didArrivalStation;
+    Model.LineSelected = arrivalStation;
+    this.state.onSelect(didArrivalStation);
+    this.state.navigation.navigate(bacheca, didArrivalStation);
   };
 }
 

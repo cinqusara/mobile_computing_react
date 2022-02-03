@@ -36,7 +36,7 @@ class Line extends Component {
           onPress={() =>
             this.state.onSelect(
               this.state.line.terminus2.did,
-              this.state.line.terminus2.sname
+              this.state.line.terminus2.sname,
               //TODO salvare in maniera persistente il did
               //TODO passare alla bacheca
             )

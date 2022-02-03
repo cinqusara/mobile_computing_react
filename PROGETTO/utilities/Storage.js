@@ -6,10 +6,8 @@ export default class Storage {
   static async checkFirstRun() {
     const firstRun = await AsyncStorage.getItem("firstRun");
     if (firstRun != null) {
-      console.log("second run");
       return false;
     } else {
-      console.log("first run");
       await AsyncStorage.setItem("firstRun", "false");
       return true;
     }
@@ -27,8 +25,9 @@ export default class Storage {
   static async saveDid(did) {
     try {
       const didString = JSON.stringify(did);
+      console.log(did);
       await AsyncStorage.setItem("did", didString);
-    } catch (e) {    
+    } catch (e) {
       console.error("Errore " + e);
     }
   }
@@ -36,10 +35,8 @@ export default class Storage {
   static async getDid() {
     const didSaved = await AsyncStorage.getItem("did");
     if (didSaved != null) {
-      console.log("esiste il did");
       return didSaved;
     } else {
-      console.log("non esiste il did");
       return null;
     }
   }
