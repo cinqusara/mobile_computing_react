@@ -24,3 +24,5 @@ ASYNC STORAGE, PER SALVATAGGIO IN MEMORIA PERSISTENTE
 LOCATON, PER LA POSIZIONE
 - expo install expo-location
 
+MAPPA
+- expo install react-native-maps
