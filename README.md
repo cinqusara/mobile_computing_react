@@ -26,3 +26,6 @@ LOCATON, PER LA POSIZIONE
 
 MAPPA
 - expo install react-native-maps
+
+IMAGE PICKER
+- expo install expo-image-picker
