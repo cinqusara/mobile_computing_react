@@ -21,3 +21,6 @@ COMANDI PER LA NAVBAR
 ASYNC STORAGE, PER SALVATAGGIO IN MEMORIA PERSISTENTE
 - npm install @react-native-async-storage/async-storage
 
+LOCATON, PER LA POSIZIONE
+- expo install expo-location
+
