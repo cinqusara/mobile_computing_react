@@ -18,3 +18,6 @@ COMANDI PER LA NAVBAR
 - npm install @react-navigation/stack
 - npm install @react-navigation/bottom-tabs
 
+ASYNC STORAGE, PER SALVATAGGIO IN MEMORIA PERSISTENTE
+npm install @react-native-async-storage/async-storage
+
