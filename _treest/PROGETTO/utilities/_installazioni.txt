@@ -1,0 +1,24 @@
+--------PROFILO------------
+npm install react-native-paper
+
+--------NAVBAR-------------
+npm install @react-navigation/native
+expo install react-native-gesture-handler react-native-reanimated react-native-screens react-native-safe-area-context @react-native-community/masked-view
+npm install @react-navigation/stack
+npm install @react-navigation/bottom-tabs
+
+--------ASYNC STORAGE - per primo avvio -------------
+npm install @react-native-async-storage/async-storage
+
+--------LOCATION-------------
+expo install expo-location
+
+--------MAPPA-------------
+expo install react-native-maps
+
+--------IMAGE PICKER------------
+expo install expo-image-picker
+
+--------TOAST------------ --> non usato nel progetto
+npm i react-native-toast-message
+
