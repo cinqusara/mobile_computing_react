@@ -3,6 +3,7 @@ import React from "react";
 import { Component } from "react";
 import { FlatList, StyleSheet, Text, View, Button } from "react-native";
 import { COLORS } from "../../../utilities/MyColors";
+import {STYLES}  from "../../../utilities/MyStyles";
 import { Avatar, Title, Caption, TouchableRipple } from "react-native-paper";
 import { borderColor } from "react-native/Libraries/Components/View/ReactNativeStyleAttributes";
 
@@ -23,7 +24,7 @@ class Post extends Component {
 
     return (
       <View style={styles.boxPost}>
-        <View style={styles.innerContainer}>
+        <View style={STYLES.innerContainer}>
           <View style={styles.userInfoSection}>
             <Avatar.Image
               source={{
@@ -111,10 +112,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     borderWidth: 3,
   },
-  innerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
+ 
   title: {
     fontWeight: "bold",
     fontSize: 20,

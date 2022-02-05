@@ -20,6 +20,11 @@ export const STYLES = StyleSheet.create({
     textAlign: "center",
   },
 
+  innerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+
   //stile per il profilo
 
   inputContainer: {
@@ -89,7 +94,7 @@ export const STYLES = StyleSheet.create({
     marginTop: 100,
     textAlign: "center",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
 
   //STILE NEW POST
@@ -99,10 +104,22 @@ export const STYLES = StyleSheet.create({
   },
 
   middleViewNewPost: {
-   
+    alignItems: "center",
+    flex: 1,
   },
 
   bottomViewNewPost: {
+    marginTop: 90,
     bottom: 0,
   },
+
+  fontSizeNewPost: {
+    fontSize: 13,
+  },
+
+  viewComment: {
+    height: 60,
+    width: "80%",
+    padding: 10
+  }
 });

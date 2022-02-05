@@ -13,7 +13,7 @@ import {
 import { COLORS } from "../../../utilities/MyColors";
 import { STYLES } from "../../../utilities/MyStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { RadioButton } from "react-native-paper";
+import { RadioButton, TextInput } from "react-native-paper";
 
 //import pages
 import CommunicationController from "../../../utilities/CommunicationController";
@@ -30,22 +30,23 @@ import Post from "./Post";
 
 class NewPost extends Component {
   state = {
-    checked: "first",
-    data: [
-      {
-        value: "Banana",
-      },
-      {
-        value: "Mango",
-      },
-      {
-        value: "Pear",
-      },
-    ],
+    stateChecked: "",
+    delayChecked: "",
+    comment: "",
   };
 
   render() {
-    return <View style={STYLES.container}>{this.renderRadioButton()}</View>;
+    return (
+      <View style={STYLES.container}>
+        {this.renderTitle()}
+        <View style={STYLES.innerContainer}>
+          {this.renderStatus()}
+          {this.renderDelay()}
+        </View>
+       {this.renderComment()}
+       {this.renderBackBtn()}
+      </View>
+    );
   }
 
   renderBackBtn = () => {
@@ -67,50 +68,109 @@ class NewPost extends Component {
 
   renderTitle = () => {
     return (
-      <View>
+      <View style={STYLES.titleViewNewPost}>
         <Text style={STYLES.title}>
-          CREA NUOVO POST {"\n"} {Model.LineSelected}
+          CREA NUOVO POST{"\n"}
+          {Model.LineSelected}
         </Text>
       </View>
     );
   };
 
-  renderRadioButton = () => {
+  renderStatus = () => {
     return (
-      <View>
+      <View style={STYLES.middleViewNewPost}>
+        <Text style={STYLES.caption}>STATO</Text>
         <RadioButton.Group
-          onValueChange={(value) => this.setChecked(value)}
-          value={this.state.checked}
+          onValueChange={(value) => this.setStatusChecked(value)}
+          value={this.state.stateChecked}
         >
-          <RadioButton.Item label="First item" value="first" />
-          <RadioButton.Item label="Second item" value="second" />
+          <RadioButton.Item
+            label="Situazione ideale"
+            value="0"
+            labelStyle={STYLES.fontSizeNewPost}
+            color={COLORS.primaryColor}
+          />
+          <RadioButton.Item
+            label="Situazione accettabile"
+            value="1"
+            labelStyle={STYLES.fontSizeNewPost}
+            color={COLORS.primaryColor}
+          />
+          <RadioButton.Item
+            label="Gravi problemi"
+            value="2"
+            labelStyle={STYLES.fontSizeNewPost}
+            color={COLORS.primaryColor}
+          />
         </RadioButton.Group>
       </View>
     );
   };
 
-  setChecked = (radio) => {
-    this.state.checked = radio;
+  renderDelay = () => {
+    return (
+      <View style={STYLES.middleViewNewPost}>
+        <Text style={STYLES.caption}>RITARDO</Text>
+        <RadioButton.Group
+          onValueChange={(value) => this.setDelayChecked(value)}
+          value={this.state.delayChecked}
+        >
+          <RadioButton.Item
+            label="In orario"
+            value="0"
+            labelStyle={STYLES.fontSizeNewPost}
+            color={COLORS.primaryColor}
+          />
+          <RadioButton.Item
+            label="Ritardo di pochi minuti"
+            value="1"
+            labelStyle={STYLES.fontSizeNewPost}
+            color={COLORS.primaryColor}
+          />
+          <RadioButton.Item
+            label="Ritardo oltre i 15 minuti"
+            value="2"
+            labelStyle={STYLES.fontSizeNewPost}
+            color={COLORS.primaryColor}
+          />
+          <RadioButton.Item
+            label="Treni soppressi"
+            value="3"
+            labelStyle={STYLES.fontSizeNewPost}
+            color={COLORS.primaryColor}
+          />
+        </RadioButton.Group>
+      </View>
+    );
+  };
+
+  setStatusChecked = (radio) => {
+    this.state.stateChecked = radio;
     this.setState(this.state);
   };
 
-  changeCountry(item) {
-    let city = null;
-    let cities;
-    switch (item.value) {
-      case "fr":
-        cities = [{ label: "Paris", value: "paris" }];
-        break;
-      case "es":
-        cities = [{ label: "Madrid", value: "madrid" }];
-        break;
-    }
+  setDelayChecked = (radio) => {
+    this.state.delayChecked = radio;
+    this.setState(this.state);
+  };
 
-    this.setState({
-      city,
-      cities,
-    });
-  }
+  renderComment = () => {
+    return (
+      <View style={STYLES.viewComment}>
+        <TextInput
+          label="Commento"
+          value={this.state.comment}
+          onChangeText={(text) => this.setComment(text)}
+          mode="outlined"
+          multiline={true}
+          activeOutlineColor={COLORS.primaryColor}
+        />
+      </View>
+    );
+  };
+
+  setComment = () => {};
 }
 
 const styles = StyleSheet.create({
