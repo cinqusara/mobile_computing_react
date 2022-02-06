@@ -11,7 +11,7 @@ _attenzione! i comandi sotto riportati sono per Windows_
 4. digitare npm start
 
 
-#### Librerie utilizzate
+### Librerie utilizzate
 
 
 _attenzione, assicurarsi di aver aperto il terminare nella cartella del progetto_
