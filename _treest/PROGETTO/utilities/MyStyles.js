@@ -15,7 +15,7 @@ export const STYLES = StyleSheet.create({
   },
 
   title: {
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
   },
@@ -120,6 +120,26 @@ export const STYLES = StyleSheet.create({
   viewComment: {
     height: 60,
     width: "80%",
-    padding: 10
-  }
+  },
+
+  innerContainerNewPost: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingTop: 40,
+  },
+
+  floatingButtonBack: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 50,
+    height: 50,
+    bottom: 35,
+    borderRadius: 60,
+    shadowRadius: 10,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.3,
+    shadowOffset: { height: 10 },
+    backgroundColor: COLORS.primaryColor,
+  },
+
 });

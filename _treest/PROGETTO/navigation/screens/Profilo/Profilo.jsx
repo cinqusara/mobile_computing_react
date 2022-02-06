@@ -137,9 +137,10 @@ class Profilo extends Component {
       if (result.base64.length <= 137000) {
         console.log("l'immagine è corretta");
         this.setState({ imgUser: result.uri, imgTooLarge: false });
-        this.updateNewUserImg(result.base64);
         this.state.imgUserBase64 = result.base64;
         this.setState(this.state);
+        this.updateNewUserData();
+
         /*TODO 
         [ ] salvarla in maniera persistente
         */
@@ -167,7 +168,7 @@ class Profilo extends Component {
       this.setState(this.state);
       Model.UserName = this.state.newUserName;
       this.setState({ visibility: false });
-      this.updateNewUserName();
+      this.updateNewUserData();
     } else {
       this.setState({ nameTooLong: true });
       this.showToast();
@@ -228,39 +229,19 @@ class Profilo extends Component {
       });
   }
 
-  updateNewUserName() {
-    console.log("dentro update new user name");
-    let img;
-    if (this.state.imgUserBase64 == "") {
-      img = null;
-    } else {
-      img = this.state.imgUserBase64;
-    }
-
-    CommunicationController.setProfile(Model.Sid, this.state.userName, img)
-      .then((result) => {
-        console.log("saved name SUCCESS");
-      })
-      .catch((e) => {
-        console.error("Error in update name " + e);
-      });
-  }
-
-  updateNewUserImg(imgBase64) {
-    let name;
-    if (this.state.userName == undefined) {
-      name = "unnamed";
-    } else {
-      name = this.state.userName;
-    }
-    CommunicationController.setProfile(Model.Sid, name, imgBase64)
+  updateNewUserData = () => {
+    CommunicationController.setProfile(
+      Model.Sid,
+      this.state.userName,
+      this.state.imgUserBase64
+    )
       .then((result) => {
         console.log("saved img SUCCESS");
       })
       .catch((e) => {
         console.error("Error " + e);
       });
-  }
+  };
 }
 
 export default Profilo;

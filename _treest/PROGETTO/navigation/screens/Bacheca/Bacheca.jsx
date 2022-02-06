@@ -25,11 +25,11 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import CommunicationController from "../../../utilities/CommunicationController";
 import Storage from "../../../utilities/Storage";
 import Model from "../../../utilities/Model";
-import NewPost from "./NewPost";
+import NewPost from "./Post/NewPost";
 import Map from "../Map/Map";
 
 //import components
-import Post from "./Post";
+import Post from "./Post/Post";
 
 /** NOTE
  * pagina 0: pagina dei post
@@ -43,14 +43,14 @@ class Bacheca extends Component {
     navigation: this.props.navigation,
     sid: this.props.route.params.sid,
     lines: this.props.route.params.lines,
-    did: Model.Did,
+    did: "",
     posts: "",
     page: 0,
     lineSelected: "",
   };
 
   componentDidMount() {
-    this.downloadPosts(this.state.sid, this.state.did); //download dei post quando crea la prima volta il componente
+    this.downloadPosts(this.state.sid, Model.Did); //download dei post quando crea la prima volta il componente
   }
 
   render() {
@@ -66,7 +66,7 @@ class Bacheca extends Component {
           return this.resetPage();
       }
     } else if (this.state.did != Model.Did) {
-      //se il did del model è cambiato, gli faccio rifare il dowload dei post
+      //quando clicco una linea dalla pagina tratte il did è diverso
       return this.resetPage();
     }
   }
@@ -76,7 +76,7 @@ class Bacheca extends Component {
   resetPage() {
     this.setState({ did: Model.Did });
     this.setState({ page: 0 });
-    this.downloadPosts(this.state.sid, this.state.did);
+    this.downloadPosts(this.state.sid, Model.Did);
     return null;
   }
 
@@ -134,7 +134,7 @@ class Bacheca extends Component {
   renderNewPost() {
     return (
       <View>
-        <NewPost onSelect={this.goBack}></NewPost>
+        <NewPost onSelect={this.goBack} onPress = {this.goBackFromNewPost}></NewPost>
       </View>
     );
   }
@@ -156,22 +156,22 @@ class Bacheca extends Component {
   /** ALTRE FUNZIONI */
 
   getLineSelected = () => {
-    if (Model.LineSelected == "" || Model.LineSelected == undefined) {
-      //caso in cui siamo siamo nel secondo avvio e il model non ha la linea selezionata
-      for (let index = 0; index < this.state.lines.length; index++) {
-        const line = this.state.lines[index];
-        if (line.terminus1.did == Model.Did) {
-          Model.LineSelected = line.terminus1.sname;
-          return line.terminus1.sname.toUpperCase();
-        } else if (line.terminus2.did == Model.Did) {
-          Model.LineSelected = line.terminus2.sname;
-          return line.terminus2.sname.toUpperCase();
-        }
-      }
-    } else {
-      return Model.LineSelected.toUpperCase();
-    }
+    this.findLine();
+    return Model.LineSelected.toUpperCase();
   };
+
+  findLine = () => {
+    this.state.lines.forEach((line) => {
+      if (line.terminus1.did == Model.Did) {
+        Model.LineSelected = line.terminus1.sname;
+      }
+      if (line.terminus2.did == Model.Did) {
+        Model.LineSelected = line.terminus2.sname;
+      }
+    });
+  };
+
+  //CHIAMATE DI RETE
 
   downloadPosts(sid, did) {
     CommunicationController.getPosts(sid, did)
@@ -201,16 +201,22 @@ class Bacheca extends Component {
     this.setState({ page: 2 });
   };
 
+  goBackFromNewPost = () => {
+    console.log("goBack from new post");
+    this.resetPage()
+  }
+
   changeDirection = () => {
     console.log("change direction");
     this.state.lines.forEach((line) => {
-      if (this.state.did == line.terminus1.did) {
-        console.log(this.state.did);
+      if (Model.Did == line.terminus1.did) {
         Model.Did = line.terminus2.did;
+        Model.LineSelected = line.terminus2.sname;
         this.state.page = 3;
         this.setState(this.state);
-      } else if (this.state.did == line.terminus2.did) {
+      } else if (Model.Did == line.terminus2.did) {
         Model.Did = line.terminus1.did;
+        Model.LineSelected = line.terminus1.sname;
         this.state.page = 3;
         this.setState(this.state);
       }

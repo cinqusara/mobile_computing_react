@@ -190,6 +190,7 @@ class MainContainer extends Component {
   downloadLinee(sid) {
     CommunicationController.getLines(sid)
       .then((result) => {
+        console.log(result.lines)
         this.state.lines = result.lines;
         this.setState(this.state);
         /** settaggio della variabile tratteScreen per cambiare la pagina */

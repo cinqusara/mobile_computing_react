@@ -37,11 +37,17 @@ export default class CommunicationController {
     return await CommunicationController._treestRequest(endPoint, parameter);
   }
 
-  /* TODO testare la set */
   static async setProfile(sid, name, picture) {
-    //console.log(sid, name, picture)
     const endPoint = "setProfile";
-    const parameter = { sid: sid, name: name, picture: picture };
+    console.log(name, picture);
+    const parameter = { sid: sid };
+    if (name != undefined) {
+      parameter.name = name;
+    }
+    if (picture != "") {
+      parameter.picture = picture;
+    }
+
     let result = await CommunicationController._treestRequest(
       endPoint,
       parameter
@@ -67,16 +73,26 @@ export default class CommunicationController {
     return await CommunicationController._treestRequest(endPoint, parameter);
   }
 
-  /* TODO capire come strutturare add post (per i campi opzionali) */
   static async addPost(sid, did, delay, status, comment) {
     const endPoint = "addPost";
-    const parameter = {
+    console.log("model did in communication controller " + did);
+
+    let parameter = {
       sid: sid,
       did: did,
-      delay: delay,
-      status: status,
-      comment: comment,
     };
+
+    if (comment != "") {
+      parameter.comment = comment;
+    }
+    if (delay != "") {
+      parameter.delay = delay;
+    }
+
+    if (status != "") {
+      parameter.status = status;
+    }
+
     return await CommunicationController._treestRequest(endPoint, parameter);
   }
 
