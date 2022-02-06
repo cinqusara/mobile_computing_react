@@ -14,7 +14,6 @@ export class Model {
   }
 
   get Did() {
-    console.log(this._did);
     return this._did;
   }
 

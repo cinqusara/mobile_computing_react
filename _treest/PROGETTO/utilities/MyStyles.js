@@ -65,8 +65,9 @@ export const STYLES = StyleSheet.create({
   },
 
   containerTextInputName: {
-    marginTop: 30,
-    height: 1,
+    marginTop: 5,
+
+    alignItems: "center",
   },
 
   caption: {
@@ -91,10 +92,14 @@ export const STYLES = StyleSheet.create({
   },
 
   commitChangesBtn: {
-    marginTop: 100,
+    marginTop: 5,
     textAlign: "center",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  textInputName: {
+    width: 200,
   },
 
   //STILE NEW POST
@@ -142,4 +147,110 @@ export const STYLES = StyleSheet.create({
     backgroundColor: COLORS.primaryColor,
   },
 
+  //STILE IN POST
+  infoLine: {
+    width: 220,
+  },
+
+  boxPost: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: COLORS.lightColor,
+    marginTop: 10,
+    padding: 3,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderWidth: 2,
+    borderColor: COLORS.darkColor,
+    height: 180,
+  },
+
+  userInfoSection: {
+    margin: 10,
+    marginBottom: 25,
+  },
+
+  dateTime: {
+    fontSize: 11,
+    color: COLORS.darkGrey,
+    textAlign: "center",
+  },
+
+  commentPost: {
+    backgroundColor: COLORS.white,
+    height: 60,
+    borderRadius: 10,
+    padding: 5,
+    borderWidth: 1,
+    borderColor: COLORS.darkColor,
+  },
+
+  textComment: {
+    fontSize: 12,
+  },
+
+  fabPost: {
+    position: "absolute",
+    margin: 22,
+    right: 0,
+    bottom: 7,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 35,
+    height: 35,
+  },
+
+  iconPost: {
+    textAlign: "center",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  //BACHECA
+  containerFlatList: {
+    height: 545,
+    width: "90%",
+  },
+
+  floatingButtonAddPost: {
+    position: "absolute",
+    width: 50,
+    height: 50,
+    bottom: 10,
+    borderRadius: 60,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowRadius: 10,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.3,
+    shadowOffset: { height: 10 },
+    backgroundColor: COLORS.darkColor,
+    right: -180,
+    elevation: 5,
+  },
+
+  titleLineSelected: {
+    fontWeight: "bold",
+    color: COLORS.white,
+    textAlignVertical: "center",
+  },
+
+  iconBacheca: {
+    padding: 14,
+  },
+
+  containerTopElementBacheca: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 5,
+    backgroundColor: COLORS.primaryColor,
+    width: "100%",
+  },
+
+  topButtonBacheca: {
+    backgroundColor: COLORS.white,
+    borderRadius: 40,
+  },
 });

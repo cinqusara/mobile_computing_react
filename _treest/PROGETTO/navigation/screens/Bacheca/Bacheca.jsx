@@ -1,10 +1,3 @@
-/*TODO inserire 
-[x] una recycle view per i post
-[x] il bottone per visualizzare la mappa
-[x] il bottone per cambiare direzione
-[ ] sistemare il titolo
-*/
-
 import React from "react";
 import { Component } from "react";
 import {
@@ -30,6 +23,7 @@ import Map from "../Map/Map";
 
 //import components
 import Post from "./Post/Post";
+import { STYLES } from "../../../utilities/MyStyles";
 
 /** NOTE
  * pagina 0: pagina dei post
@@ -50,7 +44,7 @@ class Bacheca extends Component {
   };
 
   componentDidMount() {
-    this.downloadPosts(this.state.sid, Model.Did); //download dei post quando crea la prima volta il componente
+    this.downloadPosts(); //download dei post quando crea la prima volta il componente
   }
 
   render() {
@@ -74,24 +68,27 @@ class Bacheca extends Component {
   /* FUNZIONI DI RENDER */
 
   resetPage() {
+    console.log("reset");
     this.setState({ did: Model.Did });
     this.setState({ page: 0 });
-    this.downloadPosts(this.state.sid, Model.Did);
+    this.downloadPosts();
     return null;
   }
 
   renderBacheca() {
     return (
-      <View style={styles.container}>
+      <View style={STYLES.container}>
         <StatusBar backgroundColor={COLORS.primaryColor} />
 
         <View>
-          <View style={styles.containerTopElement}>
-            <Text style={styles.title}>{this.getLineSelected()}</Text>
-            <View style={styles.topButton}>
+          <View style={STYLES.containerTopElementBacheca}>
+            <Text style={STYLES.titleLineSelected}>
+              {this.getLineSelected()}
+            </Text>
+            <View style={STYLES.topButtonBacheca}>
               <Pressable
                 onPress={() => this.changeDirection()}
-                style={styles.icon}
+                style={STYLES.iconBacheca}
               >
                 <Ionicons
                   name="repeat-outline"
@@ -100,8 +97,11 @@ class Bacheca extends Component {
                 />
               </Pressable>
             </View>
-            <View style={styles.topButton}>
-              <Pressable onPress={() => this.goToMap()} style={styles.icon}>
+            <View style={STYLES.topButtonBacheca}>
+              <Pressable
+                onPress={() => this.goToMap()}
+                style={STYLES.iconBacheca}
+              >
                 <Ionicons
                   name="navigate"
                   size={20}
@@ -112,7 +112,7 @@ class Bacheca extends Component {
           </View>
         </View>
 
-        <View style={styles.containerFlatList}>
+        <View style={STYLES.containerFlatList}>
           <FlatList
             data={this.state.posts}
             renderItem={this.renderPost}
@@ -121,10 +121,15 @@ class Bacheca extends Component {
         </View>
         <View>
           <TouchableOpacity
-            style={styles.floatingButton}
+            style={STYLES.floatingButtonAddPost}
             onPress={() => this.goToNewPost()}
           >
-            <Ionicons name="add-outline" size={30} color={COLORS.white} />
+            <Ionicons
+              name="add-outline"
+              size={30}
+              color={COLORS.white}
+              style={{ textAlign: "center" }}
+            />
           </TouchableOpacity>
         </View>
       </View>
@@ -134,7 +139,10 @@ class Bacheca extends Component {
   renderNewPost() {
     return (
       <View>
-        <NewPost onSelect={this.goBack} onPress = {this.goBackFromNewPost}></NewPost>
+        <NewPost
+          onSelect={this.goBack}
+          onPress={this.goBackFromNewPost}
+        ></NewPost>
       </View>
     );
   }
@@ -149,7 +157,7 @@ class Bacheca extends Component {
 
   renderPost = (post) => (
     <View>
-      <Post data={post} />
+      <Post data={post} onPress={this.downloadPosts} />
     </View>
   );
 
@@ -173,9 +181,13 @@ class Bacheca extends Component {
 
   //CHIAMATE DI RETE
 
-  downloadPosts(sid, did) {
-    CommunicationController.getPosts(sid, did)
+  //TODO qui mi da errore quando, settando il follow, rifaccio il download dei post
+  downloadPosts() {
+    console.log("download post");
+    console.log("sid " + this.state.sid + " did " + Model.Did);
+    CommunicationController.getPosts( this.props.route.params.sid, Model.Did)
       .then((result) => {
+        // console.log(result)
         this.state.posts = result.posts;
         this.setState(this.state);
       })
@@ -203,8 +215,8 @@ class Bacheca extends Component {
 
   goBackFromNewPost = () => {
     console.log("goBack from new post");
-    this.resetPage()
-  }
+    this.resetPage();
+  };
 
   changeDirection = () => {
     console.log("change direction");
@@ -223,72 +235,5 @@ class Bacheca extends Component {
     });
   };
 }
-
-/* STILE */
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 30,
-  },
-
-  textBold: {
-    fontWeight: "bold",
-  },
-
-  floatingButton: {
-    position: "absolute",
-    width: 50,
-    height: 50,
-    bottom: 60,
-    borderRadius: 60,
-    alignItems: "center",
-    justifyContent: "center",
-    shadowRadius: 10,
-    shadowColor: COLORS.black,
-    shadowOpacity: 0.3,
-    shadowOffset: { height: 10 },
-    backgroundColor: COLORS.primaryColor,
-    right: -170,
-    elevation: 5,
-  },
-
-  topButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 50,
-    color: COLORS.darkColor,
-  },
-
-  title: {
-    fontWeight: "bold",
-    color: COLORS.white,
-    textAlignVertical: "center",
-  },
-
-  containerTopElement: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 5,
-    backgroundColor: COLORS.primaryColor,
-    width: "100%",
-  },
-
-  topButton: {
-    backgroundColor: COLORS.white,
-    borderRadius: 40,
-  },
-
-  icon: {
-    padding: 14,
-  },
-
-  containerFlatList: {
-    height: 580,
-    width: "90%",
-  },
-});
 
 export default Bacheca;

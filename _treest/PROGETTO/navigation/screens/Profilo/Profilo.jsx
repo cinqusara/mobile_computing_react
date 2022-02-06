@@ -18,7 +18,14 @@ import {
 import Model from "../../../utilities/Model";
 
 //import per profilo
-import { Avatar, Title, Caption, TextInput } from "react-native-paper";
+import {
+  Avatar,
+  Title,
+  Caption,
+  TextInput,
+  Button,
+  HelperText,
+} from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { COLORS } from "../../../utilities/MyColors";
 import { STYLES } from "../../../utilities/MyStyles";
@@ -35,7 +42,7 @@ class Profilo extends Component {
     navigation: this.props.navigation,
     imgTooLarge: false,
     imgUserBase64: "",
-    nameTooLong: false,
+    errorName: false,
     userName: Model.UserName,
     newUserName: "",
     visibility: false,
@@ -84,6 +91,8 @@ class Profilo extends Component {
           </Pressable>
         </View>
 
+        {this.renderHelperUsername()}
+
         {/* text input user name */}
         {this.renderLabelChangeName()}
       </SafeAreaView>
@@ -92,33 +101,54 @@ class Profilo extends Component {
 
   //FUNZIONE DI RENDER PER MOSTRARE LABEL MODIFICA NOME
   renderLabelChangeName = () => {
+    const hasErrors = () => {
+      return this.state.newUserName.length > 19;
+    };
     if (this.state.visibility == true) {
       return (
         <View>
+          <HelperText type="error" visible={hasErrors()}>
+            Il nome non può superare i 20 caratteri
+          </HelperText>
+
           <View style={STYLES.containerTextInputName}>
             <TextInput
-              style={STYLES.newUserNameInput}
-              onChangeText={(text) => this.handleText(text)}
+              label="Nome"
+              mode="outlined"
+              multiline={false}
+              activeOutlineColor={COLORS.primaryColor}
+              onChangeText={(text) => this.handlerText(text)}
+              maxLength={20}
+              style={STYLES.textInputName}
             />
           </View>
           <View style={STYLES.commitChangesBtn}>
-            <Pressable
+            <Button
+              icon="update"
+              mode="contained"
               onPress={() => this.commitChanges()}
-              style={({ pressed }) => [
-                {
-                  backgroundColor: pressed ? COLORS.lightColor : COLORS.white,
-                },
-                STYLES.wrapperCustom,
-              ]}
+              color={COLORS.primaryColor}
             >
-              <Caption style={STYLES.caption}>modifica</Caption>
-            </Pressable>
+              Salva
+            </Button>
           </View>
         </View>
       );
     } else {
       return null;
     }
+  };
+
+  //FUNZIONE DI RENDER PER QUANDO VIENE SETTATO UN NOME NULLO
+  renderHelperUsername = () => {
+    const hasErrors = () => {
+      return this.state.errorName == true;
+    };
+    return (
+      <HelperText type="error" visible={hasErrors()}>
+        Il nome non può essere vuoto
+      </HelperText>
+    );
   };
 
   //FUNZIONE PER CARICARE NUOVA FOTO
@@ -157,21 +187,24 @@ class Profilo extends Component {
   };
 
   //FUNZIONE PER SALVARE CONTENUTO TEXT INPUT
-  handleText = (text) => {
+  handlerText = (text) => {
     this.setState({ newUserName: text });
   };
 
   //FUNZIONE PER IL CONTROLLO DEL NOME
   commitChanges = () => {
-    if (this.state.newUserName.length < 20) {
+    if (
+      this.state.newUserName.length < 20 &&
+      this.state.newUserName.length != 0
+    ) {
       this.state.userName = this.state.newUserName;
       this.setState(this.state);
       Model.UserName = this.state.newUserName;
       this.setState({ visibility: false });
+      this.setState({ errorName: false });
       this.updateNewUserData();
     } else {
-      this.setState({ nameTooLong: true });
-      this.showToast();
+      this.setState({ errorName: true });
     }
   };
 
@@ -199,14 +232,7 @@ class Profilo extends Component {
       ToastAndroid.show("Formato immagine non corretto", ToastAndroid.LONG);
       this.setState({ imgTooLarge: false }); //dopo aver mostrato il toast risetto la variabile a false
     }
-    if (this.state.nameTooLong == true) {
-      console.log("toast per nome");
-      ToastAndroid.show(
-        "Nome troppo lungo, resta nei 20 caratteri",
-        ToastAndroid.LONG
-      );
-      this.setState({ nameTooLong: false });
-    }
+   
   };
 
   //CHIAMATA DI RETE
