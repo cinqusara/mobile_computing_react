@@ -25,6 +25,8 @@ import Post from "./Post";
 /* TODO
 [ ] sistemare le dimensioni delle view
 [ ] sistemare layout per il titolo
+[ ] provare a creare un post con più apostrofi (dicono che sono buggati)
+[ ] se riclicco su modifica nome dovrebbe togliersi la label
 */
 
 class NewPost extends Component {
@@ -224,7 +226,6 @@ class NewPost extends Component {
   handlerComment = (text) => {
     this.state.comment = text;
     this.setState(this.state);
-    console.log(this.state.comment);
   };
 
   //CHIAMATE DI RETE

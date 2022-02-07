@@ -8,11 +8,12 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { Avatar, FAB } from "react-native-paper";
 import CommunicationController from "../../../../utilities/CommunicationController";
 import Model from "../../../../utilities/Model";
+import StorageManager from "../../../../utilities/StorageManager";
 
 class Post extends Component {
   state = {
     post: this.props.data.item,
-    uriImg:
+    placeHolderImg:
       "https://www.shareicon.net/data/512x512/2016/09/15/829452_user_512x512.png",
   };
 
@@ -20,13 +21,20 @@ class Post extends Component {
     console.log(this.props);
   }
 
+  componentDidUpdate() {
+    this.renderImg();
+  }
+
   render() {
     /*
-   
+  
     [ ] sistemare layout post
     [ ] inserire immagine
     [ ] eliminare gli a capo dal post 
     [ ] bottone follow/unfollow
+    [ ] usare solo i props e non lo state
+    [ ] cercare di capire come ridurre la variabile this.props.data.item in post
+    
     */
 
     return (
@@ -35,7 +43,7 @@ class Post extends Component {
           <View style={STYLES.userInfoSection}>
             <Avatar.Image
               source={{
-                uri: this.state.uriImg,
+                uri: this.renderImg(),
               }}
               size={80}
             />
@@ -75,6 +83,8 @@ class Post extends Component {
       </View>
     );
   }
+
+  //FUNZIONI DI CONVERSIONE DEI DATI DEL POST
 
   convertDate() {
     let fullDateTime = this.state.post.datetime;
@@ -120,8 +130,10 @@ class Post extends Component {
     }
   }
 
+  //FUNZIONE PER SETTARE ICONA FOLLOW/UNFOLLOW
+
   setIcon = () => {
-    if (this.state.post.followingAuthor == false) {
+    if (this.props.data.item.followingAuthor == false) {
       return "add-circle";
     } else {
       return "checkmark-outline";
@@ -129,7 +141,7 @@ class Post extends Component {
   };
 
   setFollowUnfollow = () => {
-    if (this.state.post.followingAuthor == false) {
+    if (this.props.data.item.followingAuthor == false) {
       //inizia a seguire l'utente
       this.setFollow();
     } else {
@@ -158,6 +170,77 @@ class Post extends Component {
       .catch((e) => {
         console.error("Error " + e);
       });
+  };
+
+  //FUNZIONE DI RENDER IMMAGINE
+
+  renderImg = () => {
+    let sm = new StorageManager();
+
+    if (this.props.data.item.pversion == 0) {
+      return this.state.placeHolderImg;
+    } else {
+      //recupero l'utente
+      sm.getUser(this.props.data.item.author)
+        .then((result) => {
+          console.log("utente: " + result);
+          if (result == null) {
+            //UTENTE NON PRESENTE - devo fare la chiamata di rete, recuperare la foto e aggiungerlo al db
+            this.downloadImgUser();
+          } else {
+            //UTENTE PRESENTE - controllo la versione della foto
+            this.checkPversionImg(result);
+          }
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    }
+  };
+
+  downloadImgUser = () => {
+    CommunicationController.getUserPicture(
+      Model.Sid,
+      this.props.data.item.author
+    )
+      .then((result) => {
+        //dopo aver trovato l'immagine la inseriamo nel db
+        this.setDB(result.picture);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
+  //FUNZIONE PER RIEMPIRE DB
+  setDB = (picture) => {
+    let sm = new StorageManager();
+
+    sm.insertUser(
+      this.props.data.item.author,
+      picture,
+      this.props.data.item.pversion
+    )
+      .then((result) => {
+        //console.log(result);
+      })
+      .catch((e) => {
+        console.error(e);
+      });
+  };
+
+  //TODO finire di fare questa funzione
+  checkPversionImg = (result) => {
+    //confrontiamo la versione nel db con quella passata dal post
+    if (result.pversion == this.props.data.item.pversion) {
+      //se sono uguali la mostriamo
+      console.log("immagine aggiornata");
+      // return "data:image/png;base64," + result.picture;
+
+      return "https://fs-prod-cdn.nintendo-europe.com/media/images/08_content_images/games_6/nintendo_switch_7/nswitch_animalcrossingnewhorizons/NSwitch_AnimalCrossingNewHorizons_Overview_Gataway_Chars_Mob.png";
+    } else {
+      //altrimenti la scarichiamo e la settiamo nel db
+    }
   };
 }
 

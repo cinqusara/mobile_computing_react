@@ -11,6 +11,7 @@ import {
   SafeAreaView,
   Pressable,
 } from "react-native";
+
 import { COLORS } from "../../../utilities/MyColors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -20,6 +21,7 @@ import Storage from "../../../utilities/Storage";
 import Model from "../../../utilities/Model";
 import NewPost from "./Post/NewPost";
 import Map from "../Map/Map";
+import StorageManager from "../../../utilities/StorageManager";
 
 //import components
 import Post from "./Post/Post";
@@ -29,7 +31,6 @@ import { STYLES } from "../../../utilities/MyStyles";
  * pagina 0: pagina dei post
  * pagina 1: pagina per aggiungere nuovo post
  * pagina 2: pagina mappa
- * pagina 3: inversione direzione --> l'ho dovuta inserire sennò non faceva il render al cambio direzione
  */
 
 class Bacheca extends Component {
@@ -44,24 +45,24 @@ class Bacheca extends Component {
   };
 
   componentDidMount() {
-    this.downloadPosts(); //download dei post quando crea la prima volta il componente
+    this.downloadPosts(this.state.sid, Model.Did); //download dei post quando crea la prima volta il componente
+  }
+
+  componentDidUpdate() {
+    if (this.state.did != Model.Did) {
+      console.log("aggiornare pagina perchè did diverso");
+      this.resetPage();
+    }
   }
 
   render() {
-    if (this.state.did == Model.Did) {
-      switch (this.state.page) {
-        case 0:
-          return this.renderBacheca();
-        case 1:
-          return this.renderNewPost();
-        case 2:
-          return this.renderMap();
-        case 3:
-          return this.resetPage();
-      }
-    } else if (this.state.did != Model.Did) {
-      //quando clicco una linea dalla pagina tratte il did è diverso
-      return this.resetPage();
+    switch (this.state.page) {
+      case 0:
+        return this.renderBacheca();
+      case 1:
+        return this.renderNewPost();
+      case 2:
+        return this.renderMap();
     }
   }
 
@@ -70,8 +71,7 @@ class Bacheca extends Component {
   resetPage() {
     console.log("reset");
     this.setState({ did: Model.Did });
-    this.setState({ page: 0 });
-    this.downloadPosts();
+    this.downloadPosts(this.state.sid, Model.Did);
     return null;
   }
 
@@ -117,6 +117,7 @@ class Bacheca extends Component {
             data={this.state.posts}
             renderItem={this.renderPost}
             keyExtractor={(data) => data.datetime}
+            extraData={this.state}
           />
         </View>
         <View>
@@ -157,11 +158,11 @@ class Bacheca extends Component {
 
   renderPost = (post) => (
     <View>
-      <Post data={post} onPress={this.downloadPosts} />
+      <Post data={post} onPress={this.reDownloadAfterFollow} />
     </View>
   );
 
-  /** ALTRE FUNZIONI */
+  //ALTRE FUNZIONI
 
   getLineSelected = () => {
     this.findLine();
@@ -180,21 +181,21 @@ class Bacheca extends Component {
   };
 
   //CHIAMATE DI RETE
-
-  //TODO qui mi da errore quando, settando il follow, rifaccio il download dei post
-  downloadPosts() {
-    console.log("download post");
-    console.log("sid " + this.state.sid + " did " + Model.Did);
-    CommunicationController.getPosts( this.props.route.params.sid, Model.Did)
+  downloadPosts(sid, did) {
+    CommunicationController.getPosts(sid, did)
       .then((result) => {
-        // console.log(result)
         this.state.posts = result.posts;
+        this.state.page = 0; //solo dopo aver scaricato i post ricarico la pagina
         this.setState(this.state);
       })
       .catch((e) => {
         console.error("Error " + e);
       });
   }
+
+  reDownloadAfterFollow = () => {
+    this.downloadPosts(this.state.sid, Model.Did);
+  };
 
   /* FUNZIONI PER CAMBIARE PAGINA */
 
@@ -224,13 +225,15 @@ class Bacheca extends Component {
       if (Model.Did == line.terminus1.did) {
         Model.Did = line.terminus2.did;
         Model.LineSelected = line.terminus2.sname;
-        this.state.page = 3;
+
         this.setState(this.state);
+        this.resetPage();
       } else if (Model.Did == line.terminus2.did) {
         Model.Did = line.terminus1.did;
         Model.LineSelected = line.terminus1.sname;
-        this.state.page = 3;
+
         this.setState(this.state);
+        this.resetPage();
       }
     });
   };

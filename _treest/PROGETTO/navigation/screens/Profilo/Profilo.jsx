@@ -108,7 +108,7 @@ class Profilo extends Component {
       return (
         <View>
           <HelperText type="error" visible={hasErrors()}>
-            Il nome non può superare i 20 caratteri
+            Hai raggiunto il limite di caratteri
           </HelperText>
 
           <View style={STYLES.containerTextInputName}>
@@ -239,7 +239,6 @@ class Profilo extends Component {
   downloadUserData() {
     CommunicationController.getProfile(Model.Sid)
       .then((result) => {
-        console.log(result.name, result.pversion);
         if (result.name != "unnamed") {
           this.state.userName = result.name;
         }

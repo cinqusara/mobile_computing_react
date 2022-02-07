@@ -39,7 +39,7 @@ export default class CommunicationController {
 
   static async setProfile(sid, name, picture) {
     const endPoint = "setProfile";
-    console.log(name, picture);
+    // console.log(name, picture);
     const parameter = { sid: sid };
     if (name != undefined) {
       parameter.name = name;
@@ -75,7 +75,7 @@ export default class CommunicationController {
 
   static async addPost(sid, did, delay, status, comment) {
     const endPoint = "addPost";
-    console.log("model did in communication controller " + did);
+    // console.log("model did in communication controller " + did);
 
     let parameter = {
       sid: sid,

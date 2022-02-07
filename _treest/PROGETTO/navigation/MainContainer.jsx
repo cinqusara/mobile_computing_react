@@ -63,13 +63,6 @@ class MainContainer extends Component {
       });
   }
 
-  //inserito perchè mi dava un warning
-  componentWillUnmount() {
-    // fix Warning: Can't perform a React state update on an unmounted component
-    this.setState = (state, callback) => {
-      return;
-    };
-  }
 
   render() {
     switch (this.state.tratteScreen) {
@@ -190,7 +183,7 @@ class MainContainer extends Component {
   downloadLinee(sid) {
     CommunicationController.getLines(sid)
       .then((result) => {
-        console.log(result.lines)
+        console.log(result.lines);
         this.state.lines = result.lines;
         this.setState(this.state);
         /** settaggio della variabile tratteScreen per cambiare la pagina */
