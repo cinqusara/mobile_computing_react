@@ -39,10 +39,10 @@ IMAGE PICKER
 - expo install expo-image-picker
 
 TOAST --> non usato nel progetto
-npm i react-native-toast-message
+- npm i react-native-toast-message
 
 SQLITE DB
-expo install expo-sqlite
+- expo install expo-sqlite
 
 CONTROLLO INTERNET
-expo install @react-native-community/netinfo
+- expo install @react-native-community/netinfo
