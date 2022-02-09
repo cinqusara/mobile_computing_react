@@ -9,14 +9,15 @@ import {
   StatusBar,
   Button,
 } from "react-native";
-import { COLORS } from "../../../utilities/MyColors";
+import { COLORS } from "../../../utilities/styles/MyColors";
 
 //import pages
-import Storage from "../../../utilities/Storage";
+import Storage from "../../../utilities/storage/Storage";
 
 //import Component
 import Line from "./Line";
 import Model from "../../../utilities/Model";
+import { STYLES } from "../../../utilities/styles/MyStyles";
 
 //const for screen
 const bacheca = "Bacheca";
@@ -34,7 +35,7 @@ class Tratte extends Component {
   render() {
     if (this.state.lines != null) {
       return (
-        <View style={styles.container}>
+        <View style={STYLES.container2}>
           <StatusBar backgroundColor={COLORS.primaryColor} />
           <FlatList
             data={this.state.lines}
@@ -65,16 +66,5 @@ class Tratte extends Component {
     this.state.navigation.navigate(bacheca, didArrivalStation);
   };
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  textBold: {
-    fontWeight: "bold",
-  },
-});
 
 export default Tratte;

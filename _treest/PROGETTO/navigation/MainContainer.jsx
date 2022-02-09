@@ -14,11 +14,14 @@ import Profilo from "./screens/Profilo/Profilo";
 
 //import other page
 import CommunicationController from "../utilities/CommunicationController";
-import Storage from "../utilities/Storage";
+import Storage from "../utilities/storage/Storage";
 import Model from "../utilities/Model";
 
-//import color
-import { COLORS } from "../utilities/MyColors";
+//import components
+import { COLORS } from "../utilities/styles/MyColors";
+
+//import alert no connection
+import alertNoConnection from "../utilities/functionAlertNoConncetion";
 
 //const for screen
 const bacheca = "Bacheca";
@@ -29,9 +32,7 @@ const profilo = "Profilo";
 const Tab = createBottomTabNavigator();
 
 /* TODO
-[ ] fare in modo che l'app non si possa girare
-[ ] fare le prove senza internet
-[ ] fare prove con tema notte
+[ ] quando sono sulla mappa, torno sulla linea e ne clicco un'altra, non va sulla bacheca ma torna su mappa
 */
 
 class MainContainer extends Component {
@@ -62,7 +63,6 @@ class MainContainer extends Component {
         console.error("Error: " + error);
       });
   }
-
 
   render() {
     switch (this.state.tratteScreen) {
@@ -149,6 +149,7 @@ class MainContainer extends Component {
       })
       .catch((error) => {
         console.error("Error in register: " + error);
+        alertNoConnection();
       });
   }
 
@@ -200,6 +201,7 @@ class MainContainer extends Component {
       })
       .catch((error) => {
         console.error("Error: " + error);
+        alertNoConnection()
       });
   }
 
@@ -214,15 +216,4 @@ class MainContainer extends Component {
   };
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 100,
-  },
-  textBold: {
-    fontWeight: "bold",
-  },
-});
 export default MainContainer;

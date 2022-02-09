@@ -4,9 +4,8 @@
 */
 
 import React from "react";
-import { Component, useState } from "react";
+import { Component } from "react";
 import {
-  StyleSheet,
   View,
   SafeAreaView,
   TouchableOpacity,
@@ -27,11 +26,14 @@ import {
   HelperText,
 } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { COLORS } from "../../../utilities/MyColors";
-import { STYLES } from "../../../utilities/MyStyles";
+import { COLORS } from "../../../utilities/styles/MyColors";
+import { STYLES } from "../../../utilities/styles/MyStyles";
 
 //import per galleria
 import * as ImagePicker from "expo-image-picker";
+
+//import aller
+import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion";
 
 //import per toast
 import { Toast } from "react-native-toast-message"; //TODO provare ad installare questi tipi di toast
@@ -166,14 +168,7 @@ class Profilo extends Component {
     if (!result.cancelled) {
       if (result.base64.length <= 137000) {
         console.log("l'immagine è corretta");
-        this.setState({ imgUser: result.uri, imgTooLarge: false });
-        this.state.imgUserBase64 = result.base64;
-        this.setState(this.state);
-        this.updateNewUserData();
-
-        /*TODO 
-        [ ] salvarla in maniera persistente
-        */
+        this.updateNewImgUser();
       } else {
         console.log("l'immagine non è corretta");
         this.setState({ imgTooLarge: true });
@@ -183,7 +178,11 @@ class Profilo extends Component {
   };
 
   changeName = () => {
-    this.setState({ visibility: true });
+    if (this.state.visibility == true) {
+      this.setState({ visibility: false });
+    } else {
+      this.setState({ visibility: true });
+    }
   };
 
   //FUNZIONE PER SALVARE CONTENUTO TEXT INPUT
@@ -197,12 +196,7 @@ class Profilo extends Component {
       this.state.newUserName.length < 20 &&
       this.state.newUserName.length != 0
     ) {
-      this.state.userName = this.state.newUserName;
-      this.setState(this.state);
-      Model.UserName = this.state.newUserName;
-      this.setState({ visibility: false });
-      this.setState({ errorName: false });
-      this.updateNewUserData();
+      this.updateNewUserName();
     } else {
       this.setState({ errorName: true });
     }
@@ -232,7 +226,6 @@ class Profilo extends Component {
       ToastAndroid.show("Formato immagine non corretto", ToastAndroid.LONG);
       this.setState({ imgTooLarge: false }); //dopo aver mostrato il toast risetto la variabile a false
     }
-   
   };
 
   //CHIAMATA DI RETE
@@ -251,20 +244,47 @@ class Profilo extends Component {
       })
       .catch((e) => {
         console.error("Error " + e);
+        alertNoConnection();
       });
   }
 
-  updateNewUserData = () => {
+  updateNewUserName = () => {
     CommunicationController.setProfile(
       Model.Sid,
       this.state.userName,
       this.state.imgUserBase64
     )
       .then((result) => {
-        console.log("saved img SUCCESS");
+        //solo se riesce a caricare i dati sul server facciamo le set
+        console.log("saved name SUCCESS");
+        this.state.userName = this.state.newUserName;
+        this.setState(this.state);
+        Model.UserName = this.state.newUserName;
+        this.setState({ visibility: false });
+        this.setState({ errorName: false });
       })
       .catch((e) => {
         console.error("Error " + e);
+        alertNoConnection();
+      });
+  };
+
+  updateNewImgUser = () => {
+    CommunicationController.setProfile(
+      Model.Sid,
+      this.state.userName,
+      this.state.imgUserBase64
+    )
+      .then((result) => {
+        //solo se riesce a caricare i dati sul server facciamo le set
+        console.log("saved img SUCCESS");
+        this.setState({ imgUser: result.uri, imgTooLarge: false });
+        this.state.imgUserBase64 = result.base64;
+        this.setState(this.state);
+      })
+      .catch((e) => {
+        console.error("Error " + e);
+        alertNoConnection();
       });
   };
 }

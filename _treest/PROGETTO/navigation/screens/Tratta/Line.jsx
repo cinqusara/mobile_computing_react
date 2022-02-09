@@ -1,8 +1,8 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Component } from "react";
-import { FlatList, StyleSheet, Text, View, Button } from "react-native";
-import { COLORS } from "../../../utilities/MyColors";
+import {Text, View, Button } from "react-native";
+import { COLORS } from "../../../utilities/styles/MyColors";
+import { STYLES } from "../../../utilities/styles/MyStyles";
 
 class Line extends Component {
   state = {
@@ -12,8 +12,8 @@ class Line extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>
+      <View style={STYLES.containerLine}>
+        <Text style={STYLES.textBold}>
           Line: {this.state.line.terminus1.sname} -{" "}
           {this.state.line.terminus2.sname}
         </Text>
@@ -30,7 +30,6 @@ class Line extends Component {
         />
         <Text>Direction: {this.state.line.terminus2.sname}</Text>
         <Button
-          style={styles.button}
           title="select"
           color = {COLORS.primaryColor}
           onPress={() =>
@@ -46,23 +45,5 @@ class Line extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    backgroundColor: COLORS.lightGrey,
-    margin: 10,
-    padding: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    borderWidth: 3,
-  },
-  title: {
-    fontWeight: "bold",
-  },
-});
 
 export default Line;

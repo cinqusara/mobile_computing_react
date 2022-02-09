@@ -2,30 +2,28 @@ import React from "react";
 import { Component } from "react";
 import {
   FlatList,
-  StyleSheet,
   Text,
   View,
   StatusBar,
-  Button,
   TouchableOpacity,
-  SafeAreaView,
   Pressable,
 } from "react-native";
 
-import { COLORS } from "../../../utilities/MyColors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 //import pages
 import CommunicationController from "../../../utilities/CommunicationController";
-import Storage from "../../../utilities/Storage";
 import Model from "../../../utilities/Model";
 import NewPost from "./Post/NewPost";
+import Post from "./Post/Post";
 import Map from "../Map/Map";
-import StorageManager from "../../../utilities/StorageManager";
+
+//import function allert
+import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion";
 
 //import components
-import Post from "./Post/Post";
-import { STYLES } from "../../../utilities/MyStyles";
+import { COLORS } from "../../../utilities/styles/MyColors";
+import { STYLES } from "../../../utilities/styles/MyStyles";
 
 /** NOTE
  * pagina 0: pagina dei post
@@ -140,6 +138,7 @@ class Bacheca extends Component {
   renderNewPost() {
     return (
       <View>
+        <StatusBar backgroundColor={COLORS.primaryColor} />
         <NewPost
           onSelect={this.goBack}
           onPress={this.goBackFromNewPost}
@@ -151,6 +150,7 @@ class Bacheca extends Component {
   renderMap() {
     return (
       <View>
+        <StatusBar backgroundColor={COLORS.primaryColor} />
         <Map onSelect={this.goBack}></Map>
       </View>
     );
@@ -190,6 +190,7 @@ class Bacheca extends Component {
       })
       .catch((e) => {
         console.error("Error " + e);
+        alertNoConnection();
       });
   }
 

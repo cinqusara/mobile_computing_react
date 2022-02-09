@@ -1,26 +1,17 @@
 import React from "react";
 import { Component } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-  StatusBar,
-  TouchableOpacity,
-  Picker,
-} from "react-native";
-import { COLORS } from "../../../../utilities/MyColors";
-import { STYLES } from "../../../../utilities/MyStyles";
+import { Text, View, TouchableOpacity } from "react-native";
+import { COLORS } from "../../../../utilities/styles/MyColors";
+import { STYLES } from "../../../../utilities/styles/MyStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { RadioButton, TextInput, Button, HelperText } from "react-native-paper";
 
 //import pages
 import CommunicationController from "../../../../utilities/CommunicationController";
-import Storage from "../../../../utilities/Storage";
 import Model from "../../../../utilities/Model";
 
-//import components
-import Post from "./Post";
+//import alert no connection
+import { alertNoConnection } from "../../../../utilities/functionAlertNoConncetion";
 
 /* TODO
 [ ] sistemare le dimensioni delle view
@@ -155,6 +146,7 @@ class NewPost extends Component {
             name="arrow-back-circle-outline"
             size={30}
             color={COLORS.white}
+            style={{ textAlign: "center" }}
           />
         </TouchableOpacity>
       </View>
@@ -190,11 +182,15 @@ class NewPost extends Component {
   //FUNZIONE DI RENDER PER IL COMMENTO
   renderComment = () => {
     const hasErrors = () => {
-      return this.state.comment.length > 100;
+      return this.state.comment.length > 99;
     };
     //TODO fare in modo che la tastiera non porti in alto la navbar
     return (
       <View style={STYLES.viewComment}>
+        <HelperText type="error" visible={hasErrors()}>
+          Hai raggiunto il massimo di caratteri!
+        </HelperText>
+
         <TextInput
           label="Commento"
           mode="outlined"
@@ -203,10 +199,6 @@ class NewPost extends Component {
           onChangeText={(text) => this.handlerComment(text)}
           maxLength={100}
         />
-
-        <HelperText type="error" visible={hasErrors()}>
-          Hai raggiunto il massimo di caratteri!
-        </HelperText>
       </View>
     );
   };
@@ -226,6 +218,10 @@ class NewPost extends Component {
   handlerComment = (text) => {
     this.state.comment = text;
     this.setState(this.state);
+  };
+
+  hideDialog = () => {
+    console.log("press");
   };
 
   //CHIAMATE DI RETE
@@ -253,6 +249,7 @@ class NewPost extends Component {
         })
         .catch((e) => {
           console.log(e);
+          alertNoConnection();
         });
     }
   };

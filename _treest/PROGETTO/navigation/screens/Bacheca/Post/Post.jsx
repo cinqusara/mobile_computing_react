@@ -1,39 +1,58 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { Component } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { COLORS } from "../../../../utilities/MyColors";
-import { STYLES } from "../../../../utilities/MyStyles";
+import { Text, View } from "react-native";
+
+//style
+import { COLORS } from "../../../../utilities/styles/MyColors";
+import { STYLES } from "../../../../utilities/styles/MyStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { Avatar, FAB } from "react-native-paper";
+
+//component
 import CommunicationController from "../../../../utilities/CommunicationController";
 import Model from "../../../../utilities/Model";
-import StorageManager from "../../../../utilities/StorageManager";
+import StorageManager from "../../../../utilities/storage/StorageManager";
+
+//import alert no connection
+import { alertNoConnection } from "../../../../utilities/functionAlertNoConncetion";
 
 class Post extends Component {
   state = {
     post: this.props.data.item,
+    imgUser:
+      "https://www.shareicon.net/data/512x512/2016/09/15/829452_user_512x512.png",
     placeHolderImg:
       "https://www.shareicon.net/data/512x512/2016/09/15/829452_user_512x512.png",
   };
 
   componentDidMount() {
-    console.log(this.props);
-  }
-
-  componentDidUpdate() {
+    // console.log(this.props);
     this.renderImg();
   }
+
+  // componentDidUpdate() {
+  //   this.renderImg();
+  // }
+
+  /* FIXME: se cambio l'immagine del mio profilo e torno su bacheca non si vede la foto aggiornata 
+            devo trovare il modo di richiamare renderImg() ogni volta che torno su bacheca
+            unica cosa è che se uso component did update mi esce il warning sotto */
+
+  // Warning: Can't perform a React state update on an unmounted component.
+  //This is a no-op, but it indicates a memory leak in your application. To fix,
+  //cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
 
   render() {
     /*
   
     [ ] sistemare layout post
-    [ ] inserire immagine
+    [x] inserire immagine
     [ ] eliminare gli a capo dal post 
-    [ ] bottone follow/unfollow
+    [x] bottone follow/unfollow
     [ ] usare solo i props e non lo state
     [ ] cercare di capire come ridurre la variabile this.props.data.item in post
+    [ ] fare dei controlli sull'immagine prima di visualizzarli
+    [ ] se l'immagine in base 64 non è corretta la visualizza bianca, lasciare così?
     
     */
 
@@ -43,7 +62,8 @@ class Post extends Component {
           <View style={STYLES.userInfoSection}>
             <Avatar.Image
               source={{
-                uri: this.renderImg(),
+                // uri: this.renderImg(),
+                uri: this.state.imgUser,
               }}
               size={80}
             />
@@ -158,6 +178,7 @@ class Post extends Component {
       })
       .catch((e) => {
         console.error("Error " + e);
+        alertNoConnection()
       });
   };
 
@@ -169,6 +190,7 @@ class Post extends Component {
       })
       .catch((e) => {
         console.error("Error " + e);
+        alertNoConnection()
       });
   };
 
@@ -183,7 +205,6 @@ class Post extends Component {
       //recupero l'utente
       sm.getUser(this.props.data.item.author)
         .then((result) => {
-          console.log("utente: " + result);
           if (result == null) {
             //UTENTE NON PRESENTE - devo fare la chiamata di rete, recuperare la foto e aggiungerlo al db
             this.downloadImgUser();
@@ -198,6 +219,20 @@ class Post extends Component {
     }
   };
 
+  checkPversionImg = (result) => {
+    //confrontiamo la versione nel db con quella passata dal post
+    if (result.pversion == this.props.data.item.pversion) {
+      //se sono uguali la mostriamo
+      console.log("immagine nel db è aggiornata");
+      this.state.imgUser = "data:image/png;base64," + result.picture;
+      this.setState(this.state);
+    } else {
+      //altrimenti la scarichiamo e la settiamo nel db
+      console.log("immagine nel db non è aggiornata");
+      this.downloadImgUser();
+    }
+  };
+
   downloadImgUser = () => {
     CommunicationController.getUserPicture(
       Model.Sid,
@@ -209,6 +244,7 @@ class Post extends Component {
       })
       .catch((e) => {
         console.error(e);
+        alertNoConnection()
       });
   };
 
@@ -222,25 +258,13 @@ class Post extends Component {
       this.props.data.item.pversion
     )
       .then((result) => {
-        //console.log(result);
+        //posso anche solo fare il set state
+        //--> se però l'utente in quel momento cambia img io me ne accorgo alla seconda renderizzazione
+        this.renderImg();
       })
       .catch((e) => {
         console.error(e);
       });
-  };
-
-  //TODO finire di fare questa funzione
-  checkPversionImg = (result) => {
-    //confrontiamo la versione nel db con quella passata dal post
-    if (result.pversion == this.props.data.item.pversion) {
-      //se sono uguali la mostriamo
-      console.log("immagine aggiornata");
-      // return "data:image/png;base64," + result.picture;
-
-      return "https://fs-prod-cdn.nintendo-europe.com/media/images/08_content_images/games_6/nintendo_switch_7/nswitch_animalcrossingnewhorizons/NSwitch_AnimalCrossingNewHorizons_Overview_Gataway_Chars_Mob.png";
-    } else {
-      //altrimenti la scarichiamo e la settiamo nel db
-    }
   };
 }
 

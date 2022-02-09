@@ -1,14 +1,13 @@
 import React from "react";
 import { Component } from "react";
 import {
-  FlatList,
-  StyleSheet,
   Text,
   View,
   TouchableOpacity,
 } from "react-native";
-import { COLORS } from "../../../utilities/MyColors";
+import { COLORS } from "../../../utilities/styles/MyColors";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { STYLES } from "../../../utilities/styles/MyStyles";
 
 //import per la posizione dell'utente
 import * as Location from "expo-location";
@@ -21,9 +20,10 @@ import CommunicationController from "../../../utilities/CommunicationController"
 //import pages
 import Model from "../../../utilities/Model";
 
+//import alert no connection
+import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion";
+
 /* TODO
-[ ] mettere pallino per far vedere la posizione dell'utente
-[x] mettere i markatori per ogni stazione
 [ ] implementare le polyne
  */
 
@@ -42,21 +42,14 @@ class Map extends Component {
     this.downloadStation();
   }
 
-  componentWillUnmount() {
-    // fix Warning: Can't perform a React state update on an unmounted component
-    this.setState = (state, callback) => {
-      return;
-    };
-  }
-
   render() {
     return (
-      <View style={styles.container}>
+      <View style={STYLES.containerMap}>
         <Text>{this.state.requestStatus}</Text>
         <MapView
           showsUserLocation={this.state.canUseLocation}
           showsMyLocationButton={true}
-          style={styles.map}
+          style={STYLES.map}
           onRegionChange={this.handleRegionChanged}
           initialRegion={{
             //Milano
@@ -81,7 +74,7 @@ class Map extends Component {
           ))}
         </MapView>
         <TouchableOpacity
-          style={styles.floatingButton}
+          style={STYLES.floatingButtonMap}
           onPress={() => this.props.onSelect()}
         >
           <Ionicons
@@ -146,34 +139,9 @@ class Map extends Component {
       })
       .catch((e) => {
         console.error("Error " + e);
+        alertNoConnection();
       });
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "black",
-  },
-  map: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  floatingButton: {
-    alignItems: "center",
-    justifyContent: "center",
-    width: 50,
-    height: 50,
-    borderRadius: 60,
-    shadowRadius: 10,
-    shadowColor: COLORS.black,
-    shadowOpacity: 0.3,
-    shadowOffset: { height: 10 },
-    backgroundColor: COLORS.primaryColor,
-    bottom: -250,
-  },
-});
 
 export default Map;
