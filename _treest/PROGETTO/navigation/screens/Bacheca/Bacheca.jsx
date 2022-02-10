@@ -31,6 +31,12 @@ import { STYLES } from "../../../utilities/styles/MyStyles";
  * pagina 2: pagina mappa
  */
 
+//TODO
+/*
+[ ] quando tolgo internet e cambio la tratta, il nome della tratta cambia (quando dovrebbe rimanere lo stesso)
+[ ] mettere una schermata di saluto del tipo "benvenuto in tre est" --> alert
+*/
+
 class Bacheca extends Component {
   state = {
     navigation: this.props.navigation,
@@ -40,6 +46,7 @@ class Bacheca extends Component {
     posts: "",
     page: 0,
     lineSelected: "",
+    img: "",
   };
 
   componentDidMount() {
@@ -49,6 +56,11 @@ class Bacheca extends Component {
   componentDidUpdate() {
     if (this.state.did != Model.Did) {
       console.log("aggiornare pagina perchè did diverso");
+      this.resetPage();
+    }
+
+    if (this.state.img != Model.UserImg) {
+      console.log("---> aggiornare pagina perchè img diverso");
       this.resetPage();
     }
   }
@@ -69,8 +81,8 @@ class Bacheca extends Component {
   resetPage() {
     console.log("reset");
     this.setState({ did: Model.Did });
+    this.setState({ img: Model.UserImg });
     this.downloadPosts(this.state.sid, Model.Did);
-    return null;
   }
 
   renderBacheca() {

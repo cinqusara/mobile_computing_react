@@ -37,11 +37,26 @@ export const STYLES = StyleSheet.create({
     marginVertical: 30,
   },
 
-  userInfoSection: {
-    paddingHorizontal: 30,
-    paddingTop: 30,
-    marginBottom: 25,
+  mainContainerProfile: {
+    alignContent: "center",
     alignItems: "center",
+    marginTop: "52%",
+    backgroundColor: COLORS.white,
+    borderRadius: 50,
+    width: 405,
+    right: 5,
+    height: "100%",
+    paddingTop: 50,
+    borderWidth: 5,
+    borderColor: COLORS.black,
+  },
+
+  userImgSection: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+    position: "absolute",
+    height: 10,
   },
 
   userNameTitle: {
@@ -54,11 +69,16 @@ export const STYLES = StyleSheet.create({
     right: -20,
   },
 
+  nameView: {
+    paddingTop: 60,
+  },
+
   floatingButtonChangeImg: {
     position: "absolute",
-    width: 20,
-    height: 20,
-    bottom: 20,
+    width: 40,
+    height: 40,
+    bottom: -30,
+    left: 10,
     borderRadius: 60,
     alignItems: "center",
     justifyContent: "center",
@@ -129,6 +149,7 @@ export const STYLES = StyleSheet.create({
 
   viewComment: {
     width: "80%",
+    height: 60,
   },
 
   innerContainerNewPost: {
@@ -159,15 +180,30 @@ export const STYLES = StyleSheet.create({
   boxPost: {
     flex: 1,
     justifyContent: "center",
-    backgroundColor: COLORS.lightColor,
+    backgroundColor: COLORS.lightGrey,
     marginTop: 10,
     padding: 3,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    borderWidth: 2,
-    borderColor: COLORS.darkColor,
+    borderWidth: 5,
+    borderColor: COLORS.primaryColor,
+    height: 180,
+  },
+
+  boxPostFollow: {
+    flex: 1,
+    justifyContent: "center",
+    marginTop: 10,
+    padding: 3,
+    backgroundColor: COLORS.lightGrey,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderWidth: 5,
+    borderColor: COLORS.secondaryColor,
     height: 180,
   },
 
@@ -189,6 +225,7 @@ export const STYLES = StyleSheet.create({
     padding: 5,
     borderWidth: 1,
     borderColor: COLORS.darkColor,
+    marginBottom: 5,
   },
 
   textComment: {
@@ -204,6 +241,19 @@ export const STYLES = StyleSheet.create({
     justifyContent: "center",
     width: 35,
     height: 35,
+    backgroundColor: COLORS.secondaryColor,
+  },
+
+  fabPostFollow: {
+    position: "absolute",
+    margin: 22,
+    right: 0,
+    bottom: 7,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 35,
+    height: 35,
+    backgroundColor: COLORS.lightColor2,
   },
 
   iconPost: {
@@ -214,7 +264,8 @@ export const STYLES = StyleSheet.create({
 
   //BACHECA
   containerFlatList: {
-    height: 490,
+    height: 550,
+    //se è secondo dispositivo mettere 490
     width: "90%",
   },
 
@@ -230,7 +281,7 @@ export const STYLES = StyleSheet.create({
     shadowColor: COLORS.black,
     shadowOpacity: 0.3,
     shadowOffset: { height: 10 },
-    backgroundColor: COLORS.darkColor,
+    backgroundColor: COLORS.lightColor2,
     right: -180,
     elevation: 5,
   },
@@ -259,11 +310,26 @@ export const STYLES = StyleSheet.create({
   },
 
   //PAGINA NO CONNECTION
- 
 
   imgNoConnection: {
     width: "30%",
     height: "30%",
+  },
+
+  //NO LINE SELECTED
+  imgOfficers: {
+    width: "50%",
+    height: "50%",
+  },
+
+  containerNoLine: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
+
+  alerNoLine: {
+    fontSize: 15,
   },
 
   //MAP
@@ -307,5 +373,10 @@ export const STYLES = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderWidth: 3,
+  },
+
+  imgTrain: {
+    width: "30%",
+    height: "30%",
   },
 });

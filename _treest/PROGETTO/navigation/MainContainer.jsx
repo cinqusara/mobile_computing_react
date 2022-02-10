@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Component } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View, Alert } from "react-native";
 
 //import per navigation
 import { NavigationContainer } from "@react-navigation/native";
@@ -16,6 +16,7 @@ import Profilo from "./screens/Profilo/Profilo";
 import CommunicationController from "../utilities/CommunicationController";
 import Storage from "../utilities/storage/Storage";
 import Model from "../utilities/Model";
+import NoLineSelected from "./screens/Bacheca/NoLineSelected";
 
 //import components
 import { COLORS } from "../utilities/styles/MyColors";
@@ -30,10 +31,6 @@ const profilo = "Profilo";
 
 //const Tab
 const Tab = createBottomTabNavigator();
-
-/* TODO
-[ ] quando sono sulla mappa, torno sulla linea e ne clicco un'altra, non va sulla bacheca ma torna su mappa
-*/
 
 class MainContainer extends Component {
   state = {
@@ -98,7 +95,7 @@ class MainContainer extends Component {
 
               return <Ionicons name={iconName} size={size} color={color} />;
             },
-            tabBarInactiveTintColor: COLORS.grey,
+            tabBarInactiveTintColor: COLORS.darkGrey,
             tabBarActiveTintColor: COLORS.primaryColor,
             labelStyle: { paddingBottom: 10, fontSize: 10 },
             style: {
@@ -115,7 +112,7 @@ class MainContainer extends Component {
         >
           <Tab.Screen
             name={bacheca}
-            component={Bacheca}
+            component={this.setComponent()}
             initialParams={{
               sid: this.state.sid,
               did: this.state.did,
@@ -139,6 +136,7 @@ class MainContainer extends Component {
 
   /** CHIAMATE PER RECUPERARE I DATI PER PRIMO AVVIO E SECONDO */
   firstLaunchActions() {
+    //this.welcome();
     CommunicationController.register()
       .then((result) => {
         this.state.sid = result.sid;
@@ -171,7 +169,6 @@ class MainContainer extends Component {
           this.state.did = result;
           this.setState(this.state);
           Model.Did = result;
-          //[ ] solo quando recupera il did bisogna sbloccare il pulsantino per poter andare sulla bacheca
         }
         this.downloadLinee(this.state.sid); //faccio sempre il download delle linee
       })
@@ -179,6 +176,15 @@ class MainContainer extends Component {
         console.error("Error in getDid: " + e);
       });
   }
+
+  //FUNZIONE PER SETTARE SCHERMATA PER CLICCARE TRATTA
+  setComponent = () => {
+    if (Model.LineSelected == undefined && this.state.did == "") {
+      return NoLineSelected;
+    } else {
+      return Bacheca;
+    }
+  };
 
   /** CHIAMATE DI RETE */
   downloadLinee(sid) {
@@ -195,13 +201,12 @@ class MainContainer extends Component {
           this.setState({ tratteScreen: true });
         } else if (this.state.did != "") {
           //SECONDO AVVIO, SI DID -> andiamo su bacheca
-          // this.downloadPosts(this.state.sid, this.state.did);
           this.setState({ tratteScreen: false });
         }
       })
       .catch((error) => {
         console.error("Error: " + error);
-        alertNoConnection()
+        alertNoConnection();
       });
   }
 
@@ -213,6 +218,14 @@ class MainContainer extends Component {
     <View>
       <Bacheca page={0}></Bacheca>
     </View>;
+  };
+
+  welcome = () => {
+    Alert.alert(
+      "BENVENUTO",
+      "Seleziona una linea per vedere i post",
+      [{ text: "OK", onPress: () => console.log("OK Pressed") }]
+    );
   };
 }
 

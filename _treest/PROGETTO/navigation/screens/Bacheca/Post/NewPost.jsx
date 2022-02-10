@@ -17,7 +17,6 @@ import { alertNoConnection } from "../../../../utilities/functionAlertNoConnceti
 [ ] sistemare le dimensioni delle view
 [ ] sistemare layout per il titolo
 [ ] provare a creare un post con più apostrofi (dicono che sono buggati)
-[ ] se riclicco su modifica nome dovrebbe togliersi la label
 */
 
 class NewPost extends Component {

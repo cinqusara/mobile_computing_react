@@ -20,19 +20,15 @@ class Post extends Component {
   state = {
     post: this.props.data.item,
     imgUser:
-      "https://www.shareicon.net/data/512x512/2016/09/15/829452_user_512x512.png",
+      "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png",
     placeHolderImg:
-      "https://www.shareicon.net/data/512x512/2016/09/15/829452_user_512x512.png",
+      "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png",
   };
 
   componentDidMount() {
     // console.log(this.props);
     this.renderImg();
   }
-
-  // componentDidUpdate() {
-  //   this.renderImg();
-  // }
 
   /* FIXME: se cambio l'immagine del mio profilo e torno su bacheca non si vede la foto aggiornata 
             devo trovare il modo di richiamare renderImg() ogni volta che torno su bacheca
@@ -44,12 +40,6 @@ class Post extends Component {
 
   render() {
     /*
-  
-    [ ] sistemare layout post
-    [x] inserire immagine
-    [ ] eliminare gli a capo dal post 
-    [x] bottone follow/unfollow
-    [ ] usare solo i props e non lo state
     [ ] cercare di capire come ridurre la variabile this.props.data.item in post
     [ ] fare dei controlli sull'immagine prima di visualizzarli
     [ ] se l'immagine in base 64 non è corretta la visualizza bianca, lasciare così?
@@ -57,7 +47,7 @@ class Post extends Component {
     */
 
     return (
-      <View style={STYLES.boxPost}>
+      <View style={this.setStyle()}>
         <View style={STYLES.innerContainer}>
           <View style={STYLES.userInfoSection}>
             <Avatar.Image
@@ -68,7 +58,7 @@ class Post extends Component {
               size={80}
             />
             <FAB
-              style={STYLES.fabPost}
+              style={this.setFab()}
               small
               icon={() => (
                 <Ionicons
@@ -84,7 +74,9 @@ class Post extends Component {
 
           <View style={STYLES.infoLine}>
             <Text>
-              <Text style={STYLES.title}>{this.state.post.authorName}</Text>
+              <Text style={STYLES.title}>
+                {this.props.data.item.authorName}
+              </Text>
               {"\n"}
               <Text style={STYLES.dateTime}>
                 {this.convertDate()} -- {this.convertTime()}
@@ -96,7 +88,9 @@ class Post extends Component {
               {"\n"}
             </Text>
             <View style={STYLES.commentPost}>
-              <Text style={STYLES.textComment}>{this.state.post.comment}</Text>
+              <Text style={STYLES.textComment}>
+                {this.setComment(this.props.data.item.comment)}
+              </Text>
             </View>
           </View>
         </View>
@@ -107,7 +101,7 @@ class Post extends Component {
   //FUNZIONI DI CONVERSIONE DEI DATI DEL POST
 
   convertDate() {
-    let fullDateTime = this.state.post.datetime;
+    let fullDateTime = this.props.data.item.datetime;
     const arrayDateTime = fullDateTime.split(" ");
     let dateString = arrayDateTime[0];
 
@@ -115,7 +109,7 @@ class Post extends Component {
   }
 
   convertTime() {
-    let fullDateTime = this.state.post.datetime;
+    let fullDateTime = this.props.data.item.datetime;
     const arrayDateTime = fullDateTime.split(" ");
     let timeString = arrayDateTime[1];
 
@@ -123,7 +117,7 @@ class Post extends Component {
   }
 
   convertStatus() {
-    switch (this.state.post.status) {
+    switch (this.props.data.item.status) {
       case 0:
         return "In orario";
       case 1:
@@ -138,7 +132,7 @@ class Post extends Component {
   }
 
   convertDelay() {
-    switch (this.state.post.delay) {
+    switch (this.props.data.item.delay) {
       case 0:
         return "Situazione ideale";
       case 1:
@@ -160,6 +154,22 @@ class Post extends Component {
     }
   };
 
+  setStyle = () => {
+    if (this.props.data.item.followingAuthor == false) {
+      return STYLES.boxPost;
+    } else {
+      return STYLES.boxPostFollow;
+    }
+  };
+
+  setFab = () => {
+    if (this.props.data.item.followingAuthor == false) {
+      return STYLES.fabPost;
+    } else {
+      return STYLES.fabPostFollow;
+    }
+  };
+
   setFollowUnfollow = () => {
     if (this.props.data.item.followingAuthor == false) {
       //inizia a seguire l'utente
@@ -171,31 +181,39 @@ class Post extends Component {
   };
 
   setFollow = () => {
-    CommunicationController.follow(Model.Sid, this.state.post.author)
+    CommunicationController.follow(Model.Sid, this.props.data.item.author)
       .then((result) => {
-        console.log("settato follow");
+        // console.log("settato follow");
+        this.setState({ follow: true });
         this.props.onPress();
       })
       .catch((e) => {
         console.error("Error " + e);
-        alertNoConnection()
+        alertNoConnection();
       });
   };
 
   setUnfollow = () => {
-    CommunicationController.unfollow(Model.Sid, this.state.post.author)
+    CommunicationController.unfollow(Model.Sid, this.props.data.item.author)
       .then((result) => {
-        console.log("settato unfollow");
+        // console.log("settato unfollow");
         this.props.onPress();
       })
       .catch((e) => {
         console.error("Error " + e);
-        alertNoConnection()
+        alertNoConnection();
       });
   };
 
-  //FUNZIONE DI RENDER IMMAGINE
+  setComment = (comment) => {
+    let text;
+    if (comment != undefined) {
+      text = comment.replace(/\n/g, " ");
+    }
+    return text;
+  };
 
+  //FUNZIONE DI RENDER IMMAGINE
   renderImg = () => {
     let sm = new StorageManager();
 
@@ -223,12 +241,12 @@ class Post extends Component {
     //confrontiamo la versione nel db con quella passata dal post
     if (result.pversion == this.props.data.item.pversion) {
       //se sono uguali la mostriamo
-      console.log("immagine nel db è aggiornata");
+      // console.log("immagine nel db è aggiornata");
       this.state.imgUser = "data:image/png;base64," + result.picture;
       this.setState(this.state);
     } else {
       //altrimenti la scarichiamo e la settiamo nel db
-      console.log("immagine nel db non è aggiornata");
+      // console.log("immagine nel db non è aggiornata");
       this.downloadImgUser();
     }
   };
@@ -244,7 +262,7 @@ class Post extends Component {
       })
       .catch((e) => {
         console.error(e);
-        alertNoConnection()
+        alertNoConnection();
       });
   };
 

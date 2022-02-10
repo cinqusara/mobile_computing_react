@@ -60,10 +60,10 @@ export default class StorageManager {
         (tx, result) => {
           //gestione del risolutato
           if (result.rows.length > 0) {
-            console.log("trovato utente");
+            // console.log("trovato utente");
             db.result = result.rows._array[0]; //prendiamo la prima riga del risulato (sarà sempre una)
           } else {
-            console.log("utente non presente");
+            // console.log("utente non presente");
             db.result = null;
           }
         },
@@ -108,9 +108,7 @@ export default class StorageManager {
         (tx, result) => {
           //gestione del risolutato
           console.log("utente inserito");
-          console.log(
-            "utente " + user + " pversion " + pversion
-          );
+          console.log("utente " + user + " pversion " + pversion);
         },
         (tx, err) => {
           console.error(err);

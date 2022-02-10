@@ -1,14 +1,7 @@
 //import elementi
 import React from "react";
 import { Component } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-  StatusBar,
-  Button,
-} from "react-native";
+import { FlatList, Text, View, StatusBar, Image } from "react-native";
 import { COLORS } from "../../../utilities/styles/MyColors";
 
 //import pages
@@ -37,6 +30,14 @@ class Tratte extends Component {
       return (
         <View style={STYLES.container2}>
           <StatusBar backgroundColor={COLORS.primaryColor} />
+          <Image
+            source={require("../../../public/trainIcon.png")}
+            style={STYLES.imgTrain}
+            resizeMode="contain"
+          />
+          <View>
+            <Text style={STYLES.title}>Tre Est In Viaggio</Text>
+          </View>
           <FlatList
             data={this.state.lines}
             extraData={this.state}

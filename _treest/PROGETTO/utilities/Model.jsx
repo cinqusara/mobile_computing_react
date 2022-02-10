@@ -32,6 +32,15 @@ export class Model {
   get UserName() {
     return this._name;
   }
+
+  set UserImg(img) {
+    console.log("settata immagine")
+    this._img = img;
+  }
+
+  get UserImg() {
+    return this._img;
+  }
 }
 
 export default new Model();

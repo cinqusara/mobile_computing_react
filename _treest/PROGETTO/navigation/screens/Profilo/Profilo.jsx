@@ -1,6 +1,5 @@
 /* TODO 
 [ ] inserire uno sfondo
-[ ] inserire contatore caratteri invece che toast
 */
 
 import React from "react";
@@ -39,6 +38,7 @@ import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion"
 import { Toast } from "react-native-toast-message"; //TODO provare ad installare questi tipi di toast
 import CommunicationController from "../../../utilities/CommunicationController";
 
+
 class Profilo extends Component {
   state = {
     navigation: this.props.navigation,
@@ -56,47 +56,48 @@ class Profilo extends Component {
 
   render() {
     return (
-      <SafeAreaView style={STYLES.container}>
-        {/* img */}
-        <View style={STYLES.userInfoSection}>
-          <Avatar.Image
-            source={{
-              uri: this.setImgUser(),
-            }}
-            size={80}
-          />
+      <SafeAreaView
+        style={(STYLES.container, { backgroundColor: COLORS.lightColor })}
+      >
+        <View style={STYLES.mainContainerProfile}>
+          <View style={STYLES.userImgSection}>
+            <Avatar.Image
+              source={{
+                uri: this.setImgUser(),
+              }}
+              size={140}
+            />
+          </View>
+          <View style={STYLES.containerBtnChangeImg}>
+            <TouchableOpacity
+              style={STYLES.floatingButtonChangeImg}
+              onPress={() => this.changeUserImg()}
+            >
+              <Ionicons name="camera" size={20} color={COLORS.primaryColor} />
+            </TouchableOpacity>
+          </View>
+
+          {/* username e btn change name */}
+          <View style={STYLES.nameView}>
+            <Title style={STYLES.userNameTitle}>{this.setUserName()}</Title>
+            <Pressable
+              onPress={() => this.changeName()}
+              style={({ pressed }) => [
+                {
+                  backgroundColor: pressed ? COLORS.lightColor : COLORS.white,
+                },
+                STYLES.wrapperCustom,
+              ]}
+            >
+              <Caption style={STYLES.caption}>modifica nome</Caption>
+            </Pressable>
+          </View>
+
+          {this.renderHelperUsername()}
+
+          {/* text input user name */}
+          {this.renderLabelChangeName()}
         </View>
-
-        {/* btn change img */}
-        <View style={STYLES.containerBtnChangeImg}>
-          <TouchableOpacity
-            style={STYLES.floatingButtonChangeImg}
-            onPress={() => this.changeUserImg()}
-          >
-            <Ionicons name="camera" size={13} color={COLORS.primaryColor} />
-          </TouchableOpacity>
-        </View>
-
-        {/* username e btn change name */}
-        <View>
-          <Title style={STYLES.userNameTitle}>{this.setUserName()}</Title>
-          <Pressable
-            onPress={() => this.changeName()}
-            style={({ pressed }) => [
-              {
-                backgroundColor: pressed ? COLORS.lightColor : COLORS.white,
-              },
-              STYLES.wrapperCustom,
-            ]}
-          >
-            <Caption style={STYLES.caption}>modifica nome</Caption>
-          </Pressable>
-        </View>
-
-        {this.renderHelperUsername()}
-
-        {/* text input user name */}
-        {this.renderLabelChangeName()}
       </SafeAreaView>
     );
   }
@@ -126,6 +127,7 @@ class Profilo extends Component {
           </View>
           <View style={STYLES.commitChangesBtn}>
             <Button
+              dark={true}
               icon="update"
               mode="contained"
               onPress={() => this.commitChanges()}
@@ -168,7 +170,9 @@ class Profilo extends Component {
     if (!result.cancelled) {
       if (result.base64.length <= 137000) {
         console.log("l'immagine è corretta");
-        this.updateNewImgUser();
+        this.setState({ imgTooLarge: false });
+        this.updateNewImgUser(result.base64);
+        Model.UserImg = result.base64;
       } else {
         console.log("l'immagine non è corretta");
         this.setState({ imgTooLarge: true });
@@ -196,7 +200,9 @@ class Profilo extends Component {
       this.state.newUserName.length < 20 &&
       this.state.newUserName.length != 0
     ) {
-      this.updateNewUserName();
+      this.setState({ visibility: false });
+      this.setState({ errorName: false });
+      this.updateNewUserName(this.state.newUserName);
     } else {
       this.setState({ errorName: true });
     }
@@ -214,7 +220,7 @@ class Profilo extends Component {
 
   setImgUser = () => {
     if (this.state.imgUserBase64 == "") {
-      return "https://www.shareicon.net/data/512x512/2016/09/15/829452_user_512x512.png";
+      return "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png"
     } else {
       return "data:image/png;base64," + this.state.imgUserBase64;
     }
@@ -238,6 +244,7 @@ class Profilo extends Component {
 
         if (result.picture != null) {
           this.state.imgUserBase64 = result.picture;
+          Model.UserImg = result.picture;
         }
 
         this.setState(this.state);
@@ -248,38 +255,32 @@ class Profilo extends Component {
       });
   }
 
-  updateNewUserName = () => {
+  updateNewUserName = (name) => {
     CommunicationController.setProfile(
       Model.Sid,
-      this.state.userName,
+      name,
       this.state.imgUserBase64
     )
       .then((result) => {
-        //solo se riesce a caricare i dati sul server facciamo le set
+        //solo se riesce a caricare i dati sul server facciamo le set del model
         console.log("saved name SUCCESS");
-        this.state.userName = this.state.newUserName;
-        this.setState(this.state);
         Model.UserName = this.state.newUserName;
-        this.setState({ visibility: false });
-        this.setState({ errorName: false });
+        this.state.userName = name;
+        this.setState(this.state);
       })
       .catch((e) => {
+        //se non riesce a caricare i dati, lo username viene ripristinato
         console.error("Error " + e);
         alertNoConnection();
       });
   };
 
-  updateNewImgUser = () => {
-    CommunicationController.setProfile(
-      Model.Sid,
-      this.state.userName,
-      this.state.imgUserBase64
-    )
+  updateNewImgUser = (img) => {
+    CommunicationController.setProfile(Model.Sid, this.state.userName, img)
       .then((result) => {
         //solo se riesce a caricare i dati sul server facciamo le set
         console.log("saved img SUCCESS");
-        this.setState({ imgUser: result.uri, imgTooLarge: false });
-        this.state.imgUserBase64 = result.base64;
+        this.state.imgUserBase64 = img;
         this.setState(this.state);
       })
       .catch((e) => {
