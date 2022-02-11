@@ -1,10 +1,6 @@
 import React from "react";
 import { Component } from "react";
-import {
-  Text,
-  View,
-  TouchableOpacity,
-} from "react-native";
+import { Text, View, TouchableOpacity } from "react-native";
 import { COLORS } from "../../../utilities/styles/MyColors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { STYLES } from "../../../utilities/styles/MyStyles";
@@ -22,10 +18,6 @@ import Model from "../../../utilities/Model";
 
 //import alert no connection
 import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion";
-
-/* TODO
-[ ] implementare le polyne
- */
 
 class Map extends Component {
   state = {
@@ -72,7 +64,15 @@ class Map extends Component {
               // description={station[1].lat}
             />
           ))}
+          <Polyline
+            coordinates={Object.entries(this.state.stations).map((x) => ({
+              latitude: parseFloat(x[1].lat),
+              longitude: parseFloat(x[1].lon),
+            }))}
+            strokeWidth={3}
+          ></Polyline>
         </MapView>
+
         <TouchableOpacity
           style={STYLES.floatingButtonMap}
           onPress={() => this.props.onSelect()}

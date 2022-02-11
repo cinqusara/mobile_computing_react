@@ -1,7 +1,3 @@
-/* TODO 
-[ ] inserire uno sfondo
-*/
-
 import React from "react";
 import { Component } from "react";
 import {
@@ -21,7 +17,6 @@ import {
   Title,
   Caption,
   TextInput,
-  Button,
   HelperText,
 } from "react-native-paper";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -35,9 +30,7 @@ import * as ImagePicker from "expo-image-picker";
 import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion";
 
 //import per toast
-import { Toast } from "react-native-toast-message"; //TODO provare ad installare questi tipi di toast
 import CommunicationController from "../../../utilities/CommunicationController";
-
 
 class Profilo extends Component {
   state = {
@@ -57,7 +50,7 @@ class Profilo extends Component {
   render() {
     return (
       <SafeAreaView
-        style={(STYLES.container, { backgroundColor: COLORS.lightColor })}
+        style={(STYLES.container, { backgroundColor: COLORS.primaryColor })}
       >
         <View style={STYLES.mainContainerProfile}>
           <View style={STYLES.userImgSection}>
@@ -66,6 +59,7 @@ class Profilo extends Component {
                 uri: this.setImgUser(),
               }}
               size={140}
+              style={{ backgroundColor: COLORS.white }}
             />
           </View>
           <View style={STYLES.containerBtnChangeImg}>
@@ -73,11 +67,57 @@ class Profilo extends Component {
               style={STYLES.floatingButtonChangeImg}
               onPress={() => this.changeUserImg()}
             >
-              <Ionicons name="camera" size={20} color={COLORS.primaryColor} />
+              <Ionicons name="camera" size={20} color={COLORS.white} />
             </TouchableOpacity>
           </View>
+          {this.renderLabelChangeName()}
+        </View>
+      </SafeAreaView>
+    );
+  }
 
-          {/* username e btn change name */}
+  //FUNZIONE DI RENDER PER MOSTRARE LABEL MODIFICA NOME
+  renderLabelChangeName = () => {
+    if (this.state.visibility == true) {
+      return (
+        <View style={STYLES.labeTextInput}>
+          {this.renderHelperUsername()}
+
+          <View style={STYLES.containerTextInputName}>
+            <TextInput
+              label="Nome"
+              mode="outlined"
+              multiline={false}
+              activeOutlineColor={COLORS.primaryColor}
+              onChangeText={(text) => this.handlerText(text)}
+              maxLength={20}
+              style={STYLES.textInputName}
+            />
+          </View>
+          <View style={STYLES.commitChangesBtn}>
+            <View style={STYLES.wrappedBtn}>
+              <TouchableOpacity onPress={() => this.commitChangesDone()}>
+                <Ionicons
+                  name="checkmark-circle"
+                  size={40}
+                  color={COLORS.lightColor2}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => this.commitChangesCancel()}>
+                <Ionicons
+                  name="close-circle"
+                  size={40}
+                  color={COLORS.lightColor}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View>
           <View style={STYLES.nameView}>
             <Title style={STYLES.userNameTitle}>{this.setUserName()}</Title>
             <Pressable
@@ -92,65 +132,23 @@ class Profilo extends Component {
               <Caption style={STYLES.caption}>modifica nome</Caption>
             </Pressable>
           </View>
-
-          {this.renderHelperUsername()}
-
-          {/* text input user name */}
-          {this.renderLabelChangeName()}
-        </View>
-      </SafeAreaView>
-    );
-  }
-
-  //FUNZIONE DI RENDER PER MOSTRARE LABEL MODIFICA NOME
-  renderLabelChangeName = () => {
-    const hasErrors = () => {
-      return this.state.newUserName.length > 19;
-    };
-    if (this.state.visibility == true) {
-      return (
-        <View>
-          <HelperText type="error" visible={hasErrors()}>
-            Hai raggiunto il limite di caratteri
-          </HelperText>
-
-          <View style={STYLES.containerTextInputName}>
-            <TextInput
-              label="Nome"
-              mode="outlined"
-              multiline={false}
-              activeOutlineColor={COLORS.primaryColor}
-              onChangeText={(text) => this.handlerText(text)}
-              maxLength={20}
-              style={STYLES.textInputName}
-            />
-          </View>
-          <View style={STYLES.commitChangesBtn}>
-            <Button
-              dark={true}
-              icon="update"
-              mode="contained"
-              onPress={() => this.commitChanges()}
-              color={COLORS.primaryColor}
-            >
-              Salva
-            </Button>
-          </View>
         </View>
       );
-    } else {
-      return null;
     }
   };
 
   //FUNZIONE DI RENDER PER QUANDO VIENE SETTATO UN NOME NULLO
   renderHelperUsername = () => {
     const hasErrors = () => {
-      return this.state.errorName == true;
+      return this.state.errorName == true || this.state.newUserName.length > 20;
     };
     return (
-      <HelperText type="error" visible={hasErrors()}>
-        Il nome non può essere vuoto
+      <HelperText
+        type="error"
+        visible={hasErrors()}
+        style={STYLES.helperTextName}
+      >
+        Errore: inserire un nome corretto
       </HelperText>
     );
   };
@@ -195,9 +193,9 @@ class Profilo extends Component {
   };
 
   //FUNZIONE PER IL CONTROLLO DEL NOME
-  commitChanges = () => {
+  commitChangesDone = () => {
     if (
-      this.state.newUserName.length < 20 &&
+      this.state.newUserName.length <= 20 &&
       this.state.newUserName.length != 0
     ) {
       this.setState({ visibility: false });
@@ -206,6 +204,12 @@ class Profilo extends Component {
     } else {
       this.setState({ errorName: true });
     }
+  };
+
+  commitChangesCancel = () => {
+    this.state.errorName = false;
+    this.state.visibility = false;
+    this.setState(this.state);
   };
 
   //FUNZIONI PER SETTARE O MENO NOME E FOTO DI PLACEHOLDER
@@ -220,7 +224,7 @@ class Profilo extends Component {
 
   setImgUser = () => {
     if (this.state.imgUserBase64 == "") {
-      return "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png"
+      return "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png";
     } else {
       return "data:image/png;base64," + this.state.imgUserBase64;
     }

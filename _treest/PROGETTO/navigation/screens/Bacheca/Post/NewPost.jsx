@@ -13,12 +13,6 @@ import Model from "../../../../utilities/Model";
 //import alert no connection
 import { alertNoConnection } from "../../../../utilities/functionAlertNoConncetion";
 
-/* TODO
-[ ] sistemare le dimensioni delle view
-[ ] sistemare layout per il titolo
-[ ] provare a creare un post con più apostrofi (dicono che sono buggati)
-*/
-
 class NewPost extends Component {
   constructor(props) {
     super(props);
@@ -29,10 +23,6 @@ class NewPost extends Component {
     comment: "",
     errorUpload: false,
   };
-
-  componentDidMount() {
-    console.log(this.props);
-  }
 
   render() {
     return (
@@ -183,7 +173,6 @@ class NewPost extends Component {
     const hasErrors = () => {
       return this.state.comment.length > 99;
     };
-    //TODO fare in modo che la tastiera non porti in alto la navbar
     return (
       <View style={STYLES.viewComment}>
         <HelperText type="error" visible={hasErrors()}>

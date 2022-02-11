@@ -25,7 +25,6 @@ export default class Storage {
   static async saveDid(did) {
     try {
       const didString = JSON.stringify(did);
-      console.log(did);
       await AsyncStorage.setItem("did", didString);
     } catch (e) {
       console.error("Errore " + e);

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Component } from "react";
-import { FlatList, StyleSheet, Text, View, Alert } from "react-native";
+import { View, Alert } from "react-native";
 
 //import per navigation
 import { NavigationContainer } from "@react-navigation/native";
@@ -80,13 +80,14 @@ class MainContainer extends Component {
           screenOptions={({ route }) => ({
             //route = location dove siamo ora
 
+            tabBarHideOnKeyboard: true, //quando scriviamo la tabbar si abbassa
             tabBarIcon: ({ focused, color, size }) => {
               //specifichiamo colore, size etc. dell'icona
               let iconName;
               let routeName = route.name;
 
               if (routeName === tratte) {
-                iconName = focused ? "list" : "list-outline"; //if ternario --> se icon name è su 'focused' prende l'icona home, altrimenti 'home-outline'
+                iconName = focused ? "train" : "train-outline"; //if ternario --> se icon name è su 'focused' prende l'icona home, altrimenti 'home-outline'
               } else if (routeName === bacheca) {
                 iconName = focused ? "grid" : "grid-outline";
               } else if (routeName === profilo) {
@@ -136,7 +137,7 @@ class MainContainer extends Component {
 
   /** CHIAMATE PER RECUPERARE I DATI PER PRIMO AVVIO E SECONDO */
   firstLaunchActions() {
-    //this.welcome();
+    this.welcome();
     CommunicationController.register()
       .then((result) => {
         this.state.sid = result.sid;
@@ -190,7 +191,6 @@ class MainContainer extends Component {
   downloadLinee(sid) {
     CommunicationController.getLines(sid)
       .then((result) => {
-        console.log(result.lines);
         this.state.lines = result.lines;
         this.setState(this.state);
         /** settaggio della variabile tratteScreen per cambiare la pagina */
@@ -216,16 +216,14 @@ class MainContainer extends Component {
     this.setState({ tratteScreen: false });
     this.setState({ did: did });
     <View>
-      <Bacheca page={0}></Bacheca>
+      <Bacheca></Bacheca>
     </View>;
   };
 
   welcome = () => {
-    Alert.alert(
-      "BENVENUTO",
-      "Seleziona una linea per vedere i post",
-      [{ text: "OK", onPress: () => console.log("OK Pressed") }]
-    );
+    Alert.alert("BENVENUTO", "Seleziona una tratta per vedere i post", [
+      { text: "OK", onPress: () => console.log("OK Pressed") },
+    ]);
   };
 }
 

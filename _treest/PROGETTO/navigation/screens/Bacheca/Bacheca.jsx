@@ -31,12 +31,6 @@ import { STYLES } from "../../../utilities/styles/MyStyles";
  * pagina 2: pagina mappa
  */
 
-//TODO
-/*
-[ ] quando tolgo internet e cambio la tratta, il nome della tratta cambia (quando dovrebbe rimanere lo stesso)
-[ ] mettere una schermata di saluto del tipo "benvenuto in tre est" --> alert
-*/
-
 class Bacheca extends Component {
   state = {
     navigation: this.props.navigation,
@@ -60,7 +54,8 @@ class Bacheca extends Component {
     }
 
     if (this.state.img != Model.UserImg) {
-      console.log("---> aggiornare pagina perchè img diverso");
+      console.log("aggiornare pagina perchè settati nuovi dati del profilo");
+
       this.resetPage();
     }
   }
@@ -86,6 +81,7 @@ class Bacheca extends Component {
   }
 
   renderBacheca() {
+    console.log("in render bacheca");
     return (
       <View style={STYLES.container}>
         <StatusBar backgroundColor={COLORS.primaryColor} />
@@ -196,6 +192,7 @@ class Bacheca extends Component {
   downloadPosts(sid, did) {
     CommunicationController.getPosts(sid, did)
       .then((result) => {
+        console.log("result download post");
         this.state.posts = result.posts;
         this.state.page = 0; //solo dopo aver scaricato i post ricarico la pagina
         this.setState(this.state);

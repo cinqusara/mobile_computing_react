@@ -40,7 +40,7 @@ export const STYLES = StyleSheet.create({
   mainContainerProfile: {
     alignContent: "center",
     alignItems: "center",
-    marginTop: "52%",
+    marginTop: "36%",
     backgroundColor: COLORS.white,
     borderRadius: 50,
     width: 405,
@@ -86,14 +86,15 @@ export const STYLES = StyleSheet.create({
     shadowColor: COLORS.black,
     shadowOpacity: 0.3,
     shadowOffset: { height: 10 },
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.lightColor2,
     elevation: 5,
   },
 
   containerTextInputName: {
-    marginTop: 5,
-
+    bottom: 70,
+    position: "absolute",
     alignItems: "center",
+    justifyContent: "center",
   },
 
   caption: {
@@ -117,20 +118,45 @@ export const STYLES = StyleSheet.create({
     justifyContent: "center",
   },
 
+  labeTextInput: {
+    marginTop: 150,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
   commitChangesBtn: {
-    marginTop: 5,
+    bottom: 25,
     textAlign: "center",
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  helperTextName: {
+    bottom: 130,
+    position: "absolute",
   },
 
   textInputName: {
     width: 200,
   },
 
+  wrappedBtn: {
+    flexDirection: "row",
+  },
+
+  btnChangeName: {
+    fontSize: 4,
+  },
+
   //STILE NEW POST
   titleViewNewPost: {
     marginTop: 40,
+  },
+
+  titlePost: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
   },
 
   middleViewNewPost: {
@@ -203,7 +229,7 @@ export const STYLES = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderWidth: 5,
-    borderColor: COLORS.secondaryColor,
+    borderColor: COLORS.lightColor2,
     height: 180,
   },
 
@@ -373,6 +399,12 @@ export const STYLES = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     borderWidth: 3,
+    textAlign: "center",
+  },
+
+  textBoldLine: {
+    fontWeight: "bold",
+    textAlign: "center",
   },
 
   imgTrain: {

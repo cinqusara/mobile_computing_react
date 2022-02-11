@@ -63,6 +63,8 @@ class Tratte extends Component {
     Storage.saveDid(didArrivalStation);
     Model.Did = didArrivalStation;
     Model.LineSelected = arrivalStation;
+    
+    //funzioni per andare sulla bacheca
     this.state.onSelect(didArrivalStation);
     this.state.navigation.navigate(bacheca, didArrivalStation);
   };

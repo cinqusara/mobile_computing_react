@@ -23,14 +23,24 @@ class Post extends Component {
       "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png",
     placeHolderImg:
       "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png",
+    changedImg: true,
   };
 
   componentDidMount() {
-    // console.log(this.props);
+    console.log("in render component did mount");
     this.renderImg();
   }
 
-  /* FIXME: se cambio l'immagine del mio profilo e torno su bacheca non si vede la foto aggiornata 
+  componentDidUpdate() {
+    console.log("in render component did update");
+    if (this.state.post.pversion != this.props.data.item.pversion) {
+      console.log("in render component did update --> in if");
+      //this.setState({ changedImg: false });
+      this.renderImg();
+    }
+  }
+
+  /* FIXME: se cambio l'immagine del mio profilo o il nome e torno su bacheca non si vede la foto aggiornata 
             devo trovare il modo di richiamare renderImg() ogni volta che torno su bacheca
             unica cosa è che se uso component did update mi esce il warning sotto */
 
@@ -39,23 +49,17 @@ class Post extends Component {
   //cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
 
   render() {
-    /*
-    [ ] cercare di capire come ridurre la variabile this.props.data.item in post
-    [ ] fare dei controlli sull'immagine prima di visualizzarli
-    [ ] se l'immagine in base 64 non è corretta la visualizza bianca, lasciare così?
-    
-    */
-
+    console.log("in redenr post");
     return (
       <View style={this.setStyle()}>
         <View style={STYLES.innerContainer}>
           <View style={STYLES.userInfoSection}>
             <Avatar.Image
               source={{
-                // uri: this.renderImg(),
                 uri: this.state.imgUser,
               }}
               size={80}
+              style={{ backgroundColor: COLORS.white }}
             />
             <FAB
               style={this.setFab()}
@@ -74,7 +78,7 @@ class Post extends Component {
 
           <View style={STYLES.infoLine}>
             <Text>
-              <Text style={STYLES.title}>
+              <Text style={STYLES.titlePost}>
                 {this.props.data.item.authorName}
               </Text>
               {"\n"}
@@ -215,18 +219,22 @@ class Post extends Component {
 
   //FUNZIONE DI RENDER IMMAGINE
   renderImg = () => {
+    console.log("in redenr img post");
     let sm = new StorageManager();
 
     if (this.props.data.item.pversion == 0) {
-      return this.state.placeHolderImg;
+      this.state.imgUser = this.state.placeHolderImg;
+      this.setState(this.state);
     } else {
       //recupero l'utente
       sm.getUser(this.props.data.item.author)
         .then((result) => {
           if (result == null) {
+            console.log("utente non presente");
             //UTENTE NON PRESENTE - devo fare la chiamata di rete, recuperare la foto e aggiungerlo al db
             this.downloadImgUser();
           } else {
+            console.log("utente presente");
             //UTENTE PRESENTE - controllo la versione della foto
             this.checkPversionImg(result);
           }
@@ -240,13 +248,15 @@ class Post extends Component {
   checkPversionImg = (result) => {
     //confrontiamo la versione nel db con quella passata dal post
     if (result.pversion == this.props.data.item.pversion) {
+      console.log("versioni uguali");
       //se sono uguali la mostriamo
-      // console.log("immagine nel db è aggiornata");
       this.state.imgUser = "data:image/png;base64," + result.picture;
       this.setState(this.state);
     } else {
       //altrimenti la scarichiamo e la settiamo nel db
-      // console.log("immagine nel db non è aggiornata");
+      console.log("immagine dell'utente è cambiata --> download");
+      this.state.post = this.props.data.item;
+      this.setState(this.state);
       this.downloadImgUser();
     }
   };
@@ -276,9 +286,8 @@ class Post extends Component {
       this.props.data.item.pversion
     )
       .then((result) => {
-        //posso anche solo fare il set state
-        //--> se però l'utente in quel momento cambia img io me ne accorgo alla seconda renderizzazione
-        this.renderImg();
+        this.state.imgUser = "data:image/png;base64," + picture;
+        this.setState(this.state);
       })
       .catch((e) => {
         console.error(e);
