@@ -1,6 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import { Text, View, TouchableOpacity } from "react-native";
+
 import { COLORS } from "../../../../utilities/styles/MyColors";
 import { STYLES } from "../../../../utilities/styles/MyStyles";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -33,6 +34,7 @@ class NewPost extends Component {
 
         <View style={STYLES.innerContainerNewPost}>
           {this.renderStatus()}
+          <View style={STYLES.divider}></View>
           {this.renderDelay()}
         </View>
         {this.renderBtnUploadNewPost()}
@@ -45,10 +47,8 @@ class NewPost extends Component {
   renderTitle = () => {
     return (
       <View style={STYLES.titleViewNewPost}>
-        <Text style={STYLES.title}>
-          CREA NUOVO POST{"\n"}
-          {Model.LineSelected}
-        </Text>
+        <Text style={STYLES.title}>CREA NUOVO POST</Text>
+        <Text style={STYLES.titleNewPost}>{Model.LineSelected}</Text>
       </View>
     );
   };
@@ -57,7 +57,7 @@ class NewPost extends Component {
   renderStatus = () => {
     return (
       <View style={STYLES.middleViewNewPost}>
-        <Text style={STYLES.caption}>STATO</Text>
+        <Text style={STYLES.captionNewPost}>STATO</Text>
         <RadioButton.Group
           onValueChange={(value) => this.setStatusChecked(value)}
           value={this.state.stateChecked}
@@ -89,7 +89,7 @@ class NewPost extends Component {
   renderDelay = () => {
     return (
       <View style={STYLES.middleViewNewPost}>
-        <Text style={STYLES.caption}>RITARDO</Text>
+        <Text style={STYLES.captionNewPost}>RITARDO</Text>
         <RadioButton.Group
           onValueChange={(value) => this.setDelayChecked(value)}
           value={this.state.delayChecked}
@@ -159,13 +159,11 @@ class NewPost extends Component {
   setStatusChecked = (radio) => {
     this.state.stateChecked = radio;
     this.setState(this.state);
-    console.log(this.state.stateChecked);
   };
 
   setDelayChecked = (radio) => {
     this.state.delayChecked = radio;
     this.setState(this.state);
-    console.log(this.state.delayChecked);
   };
 
   //FUNZIONE DI RENDER PER IL COMMENTO
@@ -220,7 +218,6 @@ class NewPost extends Component {
       this.state.delayChecked == "" &&
       this.state.stateChecked == ""
     ) {
-      console.log("nessun campo compilato");
       this.state.errorUpload = true;
       this.setState(this.state);
     } else {
@@ -232,11 +229,10 @@ class NewPost extends Component {
         this.state.comment
       )
         .then((result) => {
-          console.log(result);
           this.props.onPress();
         })
         .catch((e) => {
-          console.log(e);
+          console.error(e);
           alertNoConnection();
         });
     }

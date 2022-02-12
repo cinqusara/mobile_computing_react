@@ -112,4 +112,11 @@ export default class CommunicationController {
     const parameter = { sid: sid, uid: uid };
     return await CommunicationController._treestRequest(endPoint, parameter);
   }
+
+  //FUNZIONALITA' ESAME GENNAIO
+  static async statoLineaTreEst(did) {
+    const endPoint = "statolineatreest";
+    const parameter = { did: did };
+    return await CommunicationController._treestRequest(endPoint, parameter);
+  }
 }

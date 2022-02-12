@@ -34,12 +34,19 @@ export class Model {
   }
 
   set UserImg(img) {
-    console.log("settata immagine")
     this._img = img;
   }
 
   get UserImg() {
     return this._img;
+  }
+
+  set AuthorName(name) {
+    this._name = name;
+  }
+
+  get AuthorName() {
+    return this._name;
   }
 }
 

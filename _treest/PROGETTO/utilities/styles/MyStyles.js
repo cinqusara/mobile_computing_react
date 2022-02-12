@@ -16,6 +16,13 @@ export const STYLES = StyleSheet.create({
     flex: 1,
   },
 
+  caption: {
+    fontSize: 14,
+    lineHeight: 14,
+    fontWeight: "500",
+    textAlign: "center",
+  },
+
   textBold: {
     fontWeight: "bold",
   },
@@ -29,6 +36,11 @@ export const STYLES = StyleSheet.create({
   innerContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
+  },
+
+  divider: {
+    width: 1,
+    backgroundColor: COLORS.black,
   },
 
   //stile per il profilo
@@ -97,13 +109,6 @@ export const STYLES = StyleSheet.create({
     justifyContent: "center",
   },
 
-  caption: {
-    fontSize: 14,
-    lineHeight: 14,
-    fontWeight: "500",
-    textAlign: "center",
-  },
-
   newUserNameInput: {
     borderColor: COLORS.black,
     borderWidth: 1,
@@ -153,10 +158,11 @@ export const STYLES = StyleSheet.create({
     marginTop: 40,
   },
 
-  titlePost: {
-    fontSize: 18,
+  titleNewPost: {
+    fontSize: 20,
     fontWeight: "bold",
     textAlign: "center",
+    color: COLORS.primaryColor,
   },
 
   middleViewNewPost: {
@@ -165,8 +171,7 @@ export const STYLES = StyleSheet.create({
   },
 
   bottomViewNewPost: {
-    marginTop: 40,
-    bottom: 0,
+    marginTop: 100,
   },
 
   fontSizeNewPost: {
@@ -181,7 +186,7 @@ export const STYLES = StyleSheet.create({
   innerContainerNewPost: {
     flexDirection: "row",
     justifyContent: "space-around",
-    paddingTop: 40,
+    paddingTop: 60,
   },
 
   floatingButtonBack: {
@@ -198,9 +203,32 @@ export const STYLES = StyleSheet.create({
     backgroundColor: COLORS.primaryColor,
   },
 
+  captionNewPost: {
+    fontSize: 14,
+    lineHeight: 14,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+
   //STILE IN POST
   infoLine: {
     width: 220,
+  },
+
+  infoLineOffPost: {
+    width: 200,
+  },
+
+  titlePost: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+
+  titleOffPost: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: COLORS.white,
   },
 
   boxPost: {
@@ -233,6 +261,25 @@ export const STYLES = StyleSheet.create({
     height: 180,
   },
 
+  officialPost: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: COLORS.darkGrey,
+    marginTop: 10,
+    padding: 3,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    borderWidth: 5,
+    borderColor: COLORS.black,
+    height: 140,
+  },
+
+  bottomViewNewPost: {
+    marginTop: 100,
+  },
+
   userInfoSection: {
     margin: 10,
     marginBottom: 25,
@@ -241,7 +288,11 @@ export const STYLES = StyleSheet.create({
   dateTime: {
     fontSize: 11,
     color: COLORS.darkGrey,
-    textAlign: "center",
+  },
+
+  dateTimeOffPost: {
+    fontSize: 11,
+    color: COLORS.lightGrey2,
   },
 
   commentPost: {
@@ -282,10 +333,75 @@ export const STYLES = StyleSheet.create({
     backgroundColor: COLORS.lightColor2,
   },
 
+  fabOfficialPost: {
+    position: "absolute",
+    margin: 22,
+    bottom: -50,
+    right: 0,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 35,
+    height: 35,
+    backgroundColor: COLORS.black,
+  },
+
   iconPost: {
     textAlign: "center",
     justifyContent: "center",
     alignItems: "center",
+  },
+
+  viewDateOffPost: {
+    padding: 4,
+  },
+
+  captionOffPost: {
+    fontSize: 12,
+    lineHeight: 14,
+    fontWeight: "500",
+    textAlign: "center",
+    textAlign: "center",
+  },
+
+  //OFFICIAL POST
+
+  imgOffPost: {
+    width: "20%",
+    height: "20%",
+  },
+
+  viewOffPostSelected: {
+    paddingTop: 20,
+  },
+
+  viewInfoOffPost: {
+    marginTop: 30,
+    padding: 20,
+    backgroundColor: COLORS.white,
+    borderRadius: 20,
+    width: 350,
+  },
+
+  textBoldOffPost: {
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+
+  floatingButtonBackOffPost: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 37,
+    height: 37,
+    borderRadius: 40,
+    shadowRadius: 10,
+    shadowColor: COLORS.black,
+    shadowOpacity: 0.3,
+    shadowOffset: { height: 10 },
+    backgroundColor: COLORS.primaryColor,
+  },
+
+  viewBackBtnOffPost: {
+    marginTop: 200,
   },
 
   //BACHECA

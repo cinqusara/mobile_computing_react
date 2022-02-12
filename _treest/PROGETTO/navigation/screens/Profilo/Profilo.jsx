@@ -200,6 +200,7 @@ class Profilo extends Component {
     ) {
       this.setState({ visibility: false });
       this.setState({ errorName: false });
+      Model.AuthorName = this.state.newUserName;
       this.updateNewUserName(this.state.newUserName);
     } else {
       this.setState({ errorName: true });

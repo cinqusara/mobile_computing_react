@@ -28,3 +28,5 @@ expo install expo-sqlite
 --------CONTROLLO INTERNET------------
 expo install @react-native-community/netinfo
 
+
+

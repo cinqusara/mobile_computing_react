@@ -58,7 +58,7 @@ class Tratte extends Component {
   );
 
   handleSelect = (didArrivalStation, arrivalStation) => {
-    console.log("Select " + didArrivalStation + " -> " + arrivalStation);
+    console.log("Select " + didArrivalStation + " --> " + arrivalStation);
     this.setState({ didArrivalStation: didArrivalStation });
     Storage.saveDid(didArrivalStation);
     Model.Did = didArrivalStation;

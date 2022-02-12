@@ -17,6 +17,7 @@ import Model from "../../../utilities/Model";
 import NewPost from "./Post/NewPost";
 import Post from "./Post/Post";
 import Map from "../Map/Map";
+import Storage from "../../../utilities/storage/Storage";
 
 //import function allert
 import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion";
@@ -24,11 +25,13 @@ import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion"
 //import components
 import { COLORS } from "../../../utilities/styles/MyColors";
 import { STYLES } from "../../../utilities/styles/MyStyles";
+import OfficialPost from "./Post/OfficialPost";
 
 /** NOTE
  * pagina 0: pagina dei post
  * pagina 1: pagina per aggiungere nuovo post
  * pagina 2: pagina mappa
+ * pagina 3: info official post
  */
 
 class Bacheca extends Component {
@@ -38,24 +41,26 @@ class Bacheca extends Component {
     lines: this.props.route.params.lines,
     did: "",
     posts: "",
+    officialposts: "",
+    offPostSelected: "",
+    allPosts: "",
     page: 0,
     lineSelected: "",
     img: "",
+    authorName: "",
   };
 
   componentDidMount() {
-    this.downloadPosts(this.state.sid, Model.Did); //download dei post quando crea la prima volta il componente
+    this.downloadOfficialPost(Model.Did);
   }
 
   componentDidUpdate() {
-    if (this.state.did != Model.Did) {
-      console.log("aggiornare pagina perchè did diverso");
-      this.resetPage();
-    }
-
-    if (this.state.img != Model.UserImg) {
-      console.log("aggiornare pagina perchè settati nuovi dati del profilo");
-
+    if (
+      this.state.did != Model.Did ||
+      this.state.img != Model.UserImg ||
+      this.state.authorName != Model.AuthorName
+    ) {
+      console.log("aggiornare pagina perchè did o dati profilo aggiornati");
       this.resetPage();
     }
   }
@@ -68,20 +73,22 @@ class Bacheca extends Component {
         return this.renderNewPost();
       case 2:
         return this.renderMap();
+      case 3:
+        return this.renderOffPosts();
     }
   }
 
   /* FUNZIONI DI RENDER */
 
   resetPage() {
-    console.log("reset");
-    this.setState({ did: Model.Did });
-    this.setState({ img: Model.UserImg });
-    this.downloadPosts(this.state.sid, Model.Did);
+    this.state.did = Model.Did;
+    this.state.img = Model.UserImg;
+    this.state.authorName = Model.AuthorName;
+    this.setState(this.state);
+    this.downloadOfficialPost(Model.Did);
   }
 
   renderBacheca() {
-    console.log("in render bacheca");
     return (
       <View style={STYLES.container}>
         <StatusBar backgroundColor={COLORS.primaryColor} />
@@ -120,7 +127,7 @@ class Bacheca extends Component {
 
         <View style={STYLES.containerFlatList}>
           <FlatList
-            data={this.state.posts}
+            data={this.state.allPosts}
             renderItem={this.renderPost}
             keyExtractor={(data) => data.datetime}
             extraData={this.state}
@@ -166,9 +173,26 @@ class Bacheca extends Component {
 
   renderPost = (post) => (
     <View>
-      <Post data={post} onPress={this.reDownloadAfterFollow} />
+      <Post
+        data={post}
+        onPress={this.reDownloadAfterFollow}
+        onSelect={this.goToOffPost}
+      />
     </View>
   );
+
+  renderOffPosts = () => {
+    console.log("da bacheca a official post");
+    return (
+      <View>
+        <StatusBar backgroundColor={COLORS.primaryColor} />
+        <OfficialPost
+          onSelect={this.goBack}
+          offPostSelected={this.state.offPostSelected}
+        ></OfficialPost>
+      </View>
+    );
+  };
 
   //ALTRE FUNZIONI
 
@@ -188,12 +212,39 @@ class Bacheca extends Component {
     });
   };
 
+  //FIXME CHIAMATA DI RETE ESAME GENNAIO
+  downloadOfficialPost(did) {
+    CommunicationController.statoLineaTreEst(did)
+      .then((result) => {
+        console.log(result);
+        this.state.officialposts = result.officialposts;
+        this.setState(this.state);
+        this.downloadPosts(this.state.sid, Model.Did);
+      })
+      .catch((e) => {
+        console.error("Error " + e);
+        alertNoConnection();
+      });
+  }
+
   //CHIAMATE DI RETE
   downloadPosts(sid, did) {
     CommunicationController.getPosts(sid, did)
       .then((result) => {
-        console.log("result download post");
         this.state.posts = result.posts;
+
+        let allPosts = [];
+        this.state.officialposts.forEach((offPost) => {
+          allPosts.push(offPost);
+        });
+
+        result.posts.forEach((post) => {
+          allPosts.push(post);
+        });
+
+        this.state.allPosts = allPosts;
+        console.log(allPosts);
+
         this.state.page = 0; //solo dopo aver scaricato i post ricarico la pagina
         this.setState(this.state);
       })
@@ -210,37 +261,40 @@ class Bacheca extends Component {
   /* FUNZIONI PER CAMBIARE PAGINA */
 
   goToNewPost = () => {
-    console.log("addNewPost");
     this.setState({ page: 1 });
   };
 
   goBack = () => {
-    console.log("goBack");
     this.setState({ page: 0 });
   };
 
   goToMap = () => {
-    console.log("goToMap");
     this.setState({ page: 2 });
   };
 
   goBackFromNewPost = () => {
-    console.log("goBack from new post");
     this.resetPage();
   };
 
+  goToOffPost = (offPost) => {
+    this.state.offPostSelected = offPost;
+    this.state.page = 3;
+    this.setState(this.state);
+  };
+
   changeDirection = () => {
-    console.log("change direction");
     this.state.lines.forEach((line) => {
       if (Model.Did == line.terminus1.did) {
         Model.Did = line.terminus2.did;
         Model.LineSelected = line.terminus2.sname;
+        Storage.saveDid(line.terminus2.did);
 
         this.setState(this.state);
         this.resetPage();
       } else if (Model.Did == line.terminus2.did) {
         Model.Did = line.terminus1.did;
         Model.LineSelected = line.terminus1.sname;
+        Storage.saveDid(line.terminus1.did);
 
         this.setState(this.state);
         this.resetPage();

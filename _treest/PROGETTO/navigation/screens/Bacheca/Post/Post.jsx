@@ -19,37 +19,35 @@ import { alertNoConnection } from "../../../../utilities/functionAlertNoConnceti
 class Post extends Component {
   state = {
     post: this.props.data.item,
+    imgOffPost:
+      "https://www.collinsdictionary.com/images/full/train_172581671_1000.jpg",
     imgUser:
       "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png",
     placeHolderImg:
       "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png",
-    changedImg: true,
   };
 
   componentDidMount() {
-    console.log("in render component did mount");
     this.renderImg();
   }
 
   componentDidUpdate() {
-    console.log("in render component did update");
     if (this.state.post.pversion != this.props.data.item.pversion) {
-      console.log("in render component did update --> in if");
-      //this.setState({ changedImg: false });
       this.renderImg();
     }
   }
 
-  /* FIXME: se cambio l'immagine del mio profilo o il nome e torno su bacheca non si vede la foto aggiornata 
-            devo trovare il modo di richiamare renderImg() ogni volta che torno su bacheca
-            unica cosa è che se uso component did update mi esce il warning sotto */
-
-  // Warning: Can't perform a React state update on an unmounted component.
-  //This is a no-op, but it indicates a memory leak in your application. To fix,
-  //cancel all subscriptions and asynchronous tasks in the componentWillUnmount method.
+  //FUNZIONI DI RENDER
 
   render() {
-    console.log("in redenr post");
+    if (this.props.data.item.title == undefined) {
+      return this.renderSinglePost();
+    } else {
+      return this.renderOffPost();
+    }
+  }
+
+  renderSinglePost = () => {
     return (
       <View style={this.setStyle()}>
         <View style={STYLES.innerContainer}>
@@ -83,7 +81,8 @@ class Post extends Component {
               </Text>
               {"\n"}
               <Text style={STYLES.dateTime}>
-                {this.convertDate()} -- {this.convertTime()}
+                {this.convertDate(this.props.data.item.datetime)} --{" "}
+                {this.convertTime(this.props.data.item.datetime)}
               </Text>
               {"\n"} {"\n"}
               <Text style={STYLES.textBold}>Ritardo</Text> {this.convertDelay()}
@@ -100,20 +99,91 @@ class Post extends Component {
         </View>
       </View>
     );
-  }
+  };
+
+  renderOffPost = () => {
+    return (
+      <View style={STYLES.officialPost}>
+        <View style={STYLES.innerContainer}>
+          <View style={STYLES.userInfoSection}>
+            <Avatar.Image
+              source={{
+                uri: this.state.imgOffPost,
+              }}
+              size={80}
+            />
+            <FAB
+              style={STYLES.fabOfficialPost}
+              small
+              icon={() => (
+                <Ionicons
+                  name={"information-circle-outline"}
+                  size={25}
+                  color={COLORS.white}
+                  style={STYLES.iconPost}
+                />
+              )}
+              onPress={() => this.props.onSelect(this.props.data.item)}
+            />
+          </View>
+
+          <View style={STYLES.infoLineOffPost}>
+            <View>
+              <Text style={STYLES.titleOffPost}>
+                {this.props.data.item.title}
+              </Text>
+            </View>
+
+            <View style={STYLES.viewDateOffPost}>
+              <Text style={STYLES.dateTimeOffPost}>
+                {this.convertDate(this.props.data.item.timestamp)} --{" "}
+                {this.convertTime(this.props.data.item.timestamp)}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  //FUNZIONE DI RENDER IMMAGINE
+  renderImg = () => {
+    let sm = new StorageManager();
+
+    if (this.props.data.item.title == undefined) {
+      //rendetrizza le immagini solo per i post non ufficiali
+      if (this.props.data.item.pversion == 0) {
+        this.state.imgUser = this.state.placeHolderImg;
+        this.setState(this.state);
+      } else {
+        //recupero l'utente
+        sm.getUser(this.props.data.item.author)
+          .then((result) => {
+            if (result == null) {
+              //UTENTE NON PRESENTE - devo fare la chiamata di rete, recuperare la foto e aggiungerlo al db
+              this.downloadImgUser();
+            } else {
+              //UTENTE PRESENTE - controllo la versione della foto
+              this.checkPversionImg(result);
+            }
+          })
+          .catch((e) => {
+            console.error(e);
+          });
+      }
+    }
+  };
 
   //FUNZIONI DI CONVERSIONE DEI DATI DEL POST
 
-  convertDate() {
-    let fullDateTime = this.props.data.item.datetime;
+  convertDate(fullDateTime) {
     const arrayDateTime = fullDateTime.split(" ");
     let dateString = arrayDateTime[0];
 
     return dateString;
   }
 
-  convertTime() {
-    let fullDateTime = this.props.data.item.datetime;
+  convertTime(fullDateTime) {
     const arrayDateTime = fullDateTime.split(" ");
     let timeString = arrayDateTime[1];
 
@@ -187,7 +257,6 @@ class Post extends Component {
   setFollow = () => {
     CommunicationController.follow(Model.Sid, this.props.data.item.author)
       .then((result) => {
-        // console.log("settato follow");
         this.setState({ follow: true });
         this.props.onPress();
       })
@@ -200,7 +269,6 @@ class Post extends Component {
   setUnfollow = () => {
     CommunicationController.unfollow(Model.Sid, this.props.data.item.author)
       .then((result) => {
-        // console.log("settato unfollow");
         this.props.onPress();
       })
       .catch((e) => {
@@ -208,6 +276,8 @@ class Post extends Component {
         alertNoConnection();
       });
   };
+
+  //FUNZIONE DI SET PER IL COMMENTO
 
   setComment = (comment) => {
     let text;
@@ -217,44 +287,16 @@ class Post extends Component {
     return text;
   };
 
-  //FUNZIONE DI RENDER IMMAGINE
-  renderImg = () => {
-    console.log("in redenr img post");
-    let sm = new StorageManager();
-
-    if (this.props.data.item.pversion == 0) {
-      this.state.imgUser = this.state.placeHolderImg;
-      this.setState(this.state);
-    } else {
-      //recupero l'utente
-      sm.getUser(this.props.data.item.author)
-        .then((result) => {
-          if (result == null) {
-            console.log("utente non presente");
-            //UTENTE NON PRESENTE - devo fare la chiamata di rete, recuperare la foto e aggiungerlo al db
-            this.downloadImgUser();
-          } else {
-            console.log("utente presente");
-            //UTENTE PRESENTE - controllo la versione della foto
-            this.checkPversionImg(result);
-          }
-        })
-        .catch((e) => {
-          console.error(e);
-        });
-    }
-  };
+  //FUNZIONI PER LE IMMAGINI DELL'UTENTE
 
   checkPversionImg = (result) => {
     //confrontiamo la versione nel db con quella passata dal post
     if (result.pversion == this.props.data.item.pversion) {
-      console.log("versioni uguali");
       //se sono uguali la mostriamo
       this.state.imgUser = "data:image/png;base64," + result.picture;
       this.setState(this.state);
     } else {
       //altrimenti la scarichiamo e la settiamo nel db
-      console.log("immagine dell'utente è cambiata --> download");
       this.state.post = this.props.data.item;
       this.setState(this.state);
       this.downloadImgUser();
