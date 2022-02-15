@@ -38,9 +38,6 @@ MAPPA
 IMAGE PICKER
 - expo install expo-image-picker
 
-TOAST --> non usato nel progetto
-- npm i react-native-toast-message
-
 SQLITE DB
 - expo install expo-sqlite
 
