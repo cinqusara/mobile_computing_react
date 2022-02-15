@@ -286,7 +286,7 @@ export const STYLES = StyleSheet.create({
   },
 
   dateTime: {
-    fontSize: 11,
+    fontSize: 10.7,
     color: COLORS.darkGrey,
   },
 
@@ -306,7 +306,7 @@ export const STYLES = StyleSheet.create({
   },
 
   textComment: {
-    fontSize: 12,
+    fontSize: 10.7,
   },
 
   fabPost: {

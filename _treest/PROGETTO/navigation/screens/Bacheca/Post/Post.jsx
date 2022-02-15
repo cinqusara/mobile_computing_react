@@ -19,8 +19,7 @@ import { alertNoConnection } from "../../../../utilities/functionAlertNoConnceti
 class Post extends Component {
   state = {
     post: this.props.data.item,
-    imgOffPost:
-      "https://www.collinsdictionary.com/images/full/train_172581671_1000.jpg",
+
     imgUser:
       "https://gogeticon.net/files/3160437/160288ffac991fe4b11f27f32622263a.png",
     placeHolderImg:
@@ -107,9 +106,7 @@ class Post extends Component {
         <View style={STYLES.innerContainer}>
           <View style={STYLES.userInfoSection}>
             <Avatar.Image
-              source={{
-                uri: this.state.imgOffPost,
-              }}
+              source={require("../../../../public/offPost.png")}
               size={80}
             />
             <FAB
@@ -218,7 +215,7 @@ class Post extends Component {
     }
   }
 
-  //FUNZIONE PER SETTARE ICONA FOLLOW/UNFOLLOW
+  //FUNZIONE PER SETTARE I POST
 
   setIcon = () => {
     if (this.props.data.item.followingAuthor == false) {
@@ -276,8 +273,6 @@ class Post extends Component {
         alertNoConnection();
       });
   };
-
-  //FUNZIONE DI SET PER IL COMMENTO
 
   setComment = (comment) => {
     let text;

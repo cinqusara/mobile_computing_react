@@ -107,8 +107,8 @@ export default class StorageManager {
         [user, picture, pversion],
         (tx, result) => {
           //gestione del risolutato
-          console.log("utente inserito");
-          console.log("utente " + user + " pversion " + pversion);
+          // console.log("utente inserito");
+          // console.log("utente " + user + " pversion " + pversion);
         },
         (tx, err) => {
           console.error(err);

@@ -66,6 +66,8 @@ class Bacheca extends Component {
   }
 
   render() {
+    //console.log("----------------")
+    //console.log(this.props.route.params.sponsors)
     switch (this.state.page) {
       case 0:
         return this.renderBacheca();
@@ -78,8 +80,7 @@ class Bacheca extends Component {
     }
   }
 
-  /* FUNZIONI DI RENDER */
-
+  //FUNZIONE DI RESET PAGINA --> RIPRISTINA I DATI E CI PORTA SULLA BACHECA
   resetPage() {
     this.state.did = Model.Did;
     this.state.img = Model.UserImg;
@@ -87,6 +88,8 @@ class Bacheca extends Component {
     this.setState(this.state);
     this.downloadOfficialPost(Model.Did);
   }
+
+  //FUNZIONI DI RENDER
 
   renderBacheca() {
     return (
@@ -166,7 +169,10 @@ class Bacheca extends Component {
     return (
       <View>
         <StatusBar backgroundColor={COLORS.primaryColor} />
-        <Map onSelect={this.goBack}></Map>
+        <Map
+          onSelect={this.goBack}
+          sponsors={this.props.route.params.sponsors}
+        ></Map>
       </View>
     );
   }
@@ -182,7 +188,6 @@ class Bacheca extends Component {
   );
 
   renderOffPosts = () => {
-    console.log("da bacheca a official post");
     return (
       <View>
         <StatusBar backgroundColor={COLORS.primaryColor} />
@@ -216,7 +221,7 @@ class Bacheca extends Component {
   downloadOfficialPost(did) {
     CommunicationController.statoLineaTreEst(did)
       .then((result) => {
-        console.log(result);
+        // console.log(result);
         this.state.officialposts = result.officialposts;
         this.setState(this.state);
         this.downloadPosts(this.state.sid, Model.Did);
@@ -243,7 +248,7 @@ class Bacheca extends Component {
         });
 
         this.state.allPosts = allPosts;
-        console.log(allPosts);
+        // console.log(allPosts);
 
         this.state.page = 0; //solo dopo aver scaricato i post ricarico la pagina
         this.setState(this.state);

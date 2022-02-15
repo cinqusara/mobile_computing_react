@@ -1,6 +1,6 @@
 import React from "react";
 import { Component } from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { Text, View, TouchableOpacity, StatusBar } from "react-native";
 import { COLORS } from "../../../utilities/styles/MyColors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { STYLES } from "../../../utilities/styles/MyStyles";
@@ -9,12 +9,13 @@ import { STYLES } from "../../../utilities/styles/MyStyles";
 import * as Location from "expo-location";
 
 //import per la mappa
-import MapView from "react-native-maps";
+import MapView, { MarkerAnimated } from "react-native-maps";
 import { Marker, Polyline } from "react-native-maps";
 import CommunicationController from "../../../utilities/CommunicationController";
 
 //import pages
 import Model from "../../../utilities/Model";
+import InfoSponsor from "./InfoSponsor";
 
 //import alert no connection
 import { alertNoConnection } from "../../../utilities/functionAlertNoConncetion";
@@ -27,14 +28,31 @@ class Map extends Component {
     stations: "",
     currentUserLocation: "",
     canUseLocation: false,
+    page: 0,
   };
+
+  /*NOTE
+  pagina 0: mappa
+  pagina 1: info sponsor */
 
   componentDidMount() {
     this.locationPermissionAsync();
     this.downloadStation();
+    // console.log("--------------")
+    // console.log(this.props)
   }
 
   render() {
+    switch (this.state.page) {
+      case 0:
+        return this.renderMap();
+      case 1:
+        return this.renderScreenSponsor();
+    }
+  }
+
+  //FUNZIONE DI RENDER DELLA MAPPA
+  renderMap = () => {
     return (
       <View style={STYLES.containerMap}>
         <Text>{this.state.requestStatus}</Text>
@@ -52,7 +70,7 @@ class Map extends Component {
           }}
         >
           {Object.entries(this.state.stations).map((station) => (
-            //crea un array, dove per ogni parametro ha in 0 la posizion e in 1 tutto l'oggetto
+            //crea un array, dove per ogni parametro ha in 0 la position e in 1 tutto l'oggetto
             <Marker
               //pinColor="blue"
               key={station[1].sname}
@@ -63,6 +81,20 @@ class Map extends Component {
               title={station[1].sname}
               // description={station[1].lat}
             />
+          ))}
+          {Object.entries(Model.AllSponsor).map((s) => (
+            //crea un array, dove per ogni parametro ha in 0 la position e in 1 tutto l'oggetto
+            <Marker
+              pinColor="blue"
+              key={s[1].name}
+              coordinate={{
+                latitude: parseFloat(s[1].lat),
+                longitude: parseFloat(s[1].lon),
+              }}
+              
+              title={s[1].name}
+              onPress={() => this.goToInfoSponsor(s)}
+            ></Marker>
           ))}
           <Polyline
             coordinates={Object.entries(this.state.stations).map((x) => ({
@@ -83,6 +115,30 @@ class Map extends Component {
             color={COLORS.white}
           />
         </TouchableOpacity>
+      </View>
+    );
+  };
+
+  //RENDER ESAME FEBBRAIO
+
+  goToInfoSponsor = (sponsor) => {
+    console.log("in go to info sponsor");
+    this.state.sponsorSelected = sponsor;
+    Model.SponsorSelected = sponsor;
+    this.state.page = 1;
+    this.setState(this.state);
+  };
+
+  renderScreenSponsor() {
+    console.log("in render screen sponsor");
+    //console.log(sponsor)
+    return (
+      <View>
+        <StatusBar backgroundColor={COLORS.primaryColor} />
+        <InfoSponsor
+          onSelect={this.goBack}
+          sponsor={this.state.sponsorSelected}
+        ></InfoSponsor>
       </View>
     );
   }
@@ -142,6 +198,10 @@ class Map extends Component {
         alertNoConnection();
       });
   }
+
+  goBack = () => {
+    this.setState({ page: 0 });
+  };
 }
 
 export default Map;

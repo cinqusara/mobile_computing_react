@@ -40,9 +40,9 @@ class MainContainer extends Component {
     posts: "",
     firstLaunch: null,
     tratteScreen: null,
+    sponsors: "",
   };
 
-  //invocato subito dopo il primo ciclo di render
   componentDidMount() {
     Storage.checkFirstRun()
       .then((result) => {
@@ -118,6 +118,7 @@ class MainContainer extends Component {
               sid: this.state.sid,
               did: this.state.did,
               lines: this.state.lines,
+              sponsors: this.state.sponsors,
             }}
           />
           <Tab.Screen
@@ -135,7 +136,7 @@ class MainContainer extends Component {
     );
   }
 
-  /** CHIAMATE PER RECUPERARE I DATI PER PRIMO AVVIO E SECONDO */
+  // CHIAMATE PER RECUPERARE I DATI PER PRIMO E SECONDO AVVIO
   firstLaunchActions() {
     this.welcome();
     CommunicationController.register()
@@ -203,10 +204,40 @@ class MainContainer extends Component {
           //SECONDO AVVIO, SI DID -> andiamo su bacheca
           this.setState({ tratteScreen: false });
         }
+        this.downloadSponsor(this.state.sid);
       })
       .catch((error) => {
         console.error("Error: " + error);
         alertNoConnection();
+      });
+  }
+
+  downloadSponsor(sid) {
+    console.log("in download sponsors");
+    CommunicationController.getSponsor(sid)
+      .then((result) => {
+        // console.log(result.sponsors);
+        let size = result.sponsors.length;
+        console.log("esamefebbraio numero sponsor: [" + size + "]");
+        result.sponsors.forEach((s) => {
+          console.log(
+            "esamefebbraio nome: [" +
+              s.name +
+              "]" +
+              "[" +
+              s.lat +
+              "]" +
+              "[" +
+              s.lon +
+              "]"
+          );
+        });
+        this.state.sponsors = result.sponsors;
+        Model.AllSponsor = result.sponsors;
+        this.setState(this.state);
+      })
+      .catch((e) => {
+        console.error("Error " + e);
       });
   }
 

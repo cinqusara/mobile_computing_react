@@ -119,4 +119,11 @@ export default class CommunicationController {
     const parameter = { did: did };
     return await CommunicationController._treestRequest(endPoint, parameter);
   }
+
+  //FUNZIONALITA' ESAME FEBBRAIO
+  static async getSponsor(sid) {
+    const endPoint = "locspons";
+    const parameter = { sid: sid };
+    return await CommunicationController._treestRequest(endPoint, parameter);
+  }
 }

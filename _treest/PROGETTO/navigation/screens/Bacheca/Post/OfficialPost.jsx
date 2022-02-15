@@ -62,6 +62,8 @@ class OfficialPost extends Component {
     );
   }
 
+  //FUNZIONI PER CONVERTIRE IL TIMESTAMP
+
   convertDate(fullDateTime) {
     const arrayDateTime = fullDateTime.split(" ");
     let dateString = arrayDateTime[0];

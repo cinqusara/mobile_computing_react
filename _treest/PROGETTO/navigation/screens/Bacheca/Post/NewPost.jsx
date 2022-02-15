@@ -85,6 +85,11 @@ class NewPost extends Component {
     );
   };
 
+  setStatusChecked = (radio) => {
+    this.state.stateChecked = radio;
+    this.setState(this.state);
+  };
+
   //FUNZIONE DI RENDER PER RADIO BUTTON DELAY
   renderDelay = () => {
     return (
@@ -123,6 +128,11 @@ class NewPost extends Component {
     );
   };
 
+  setDelayChecked = (radio) => {
+    this.state.delayChecked = radio;
+    this.setState(this.state);
+  };
+
   //FUNZIONE DI RENDER PER BOTTONE BACK
   renderBackBtn = () => {
     return (
@@ -154,16 +164,6 @@ class NewPost extends Component {
         CARICA NUOVO POST
       </Button>
     );
-  };
-
-  setStatusChecked = (radio) => {
-    this.state.stateChecked = radio;
-    this.setState(this.state);
-  };
-
-  setDelayChecked = (radio) => {
-    this.state.delayChecked = radio;
-    this.setState(this.state);
   };
 
   //FUNZIONE DI RENDER PER IL COMMENTO

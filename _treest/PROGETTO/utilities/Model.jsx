@@ -48,6 +48,23 @@ export class Model {
   get AuthorName() {
     return this._name;
   }
+
+  
+  set SponsorSelected(s) {
+    this._sponsor = s;
+  }
+
+  get SponsorSelected() {
+    return this._sponsor;
+  }
+
+  set AllSponsor(s) {
+    this._sponsors = s;
+  }
+
+  get AllSponsor() {
+    return this._sponsors;
+  }
 }
 
 export default new Model();
